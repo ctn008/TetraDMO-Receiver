@@ -32,5 +32,8 @@ File .out này là các tetra audio frame (tương ứng với 30ms), cần ch�
 - Xử lý dữ liệu Tetra speech trong uPlane đang bỏ sót tình huống DNB-SF burst có bkn1 là signaling, nhưng bkn2 là speech.
 - khi chạy decoder từ folder khác không phải current folder, xuất hiện lỗi segmentation fault - khả năng do lỗi của 1 pointer variable nào đó chưa được initialize, nhiều khả năng trong phần code uPlane, nhưng chưa phát hiện ra.
 
- 
+## Mục tiêu tiếp theo 
+- Tích hợp phần giải điều chế pi4 dqpsk và phần xử lý âm thanh ra loa vào cùng 1 phần mềm.
+- Hoàn thiện thiết kế, cấu trúc chương trình với các object class dữ liệu để làm platform chuẩn  
+- Xử lý giải mã cả tín hiệu TMO và DMO 
 
