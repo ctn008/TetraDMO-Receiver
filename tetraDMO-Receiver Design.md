@@ -16,3 +16,8 @@ Sau khi xem xét các lựa chọn tự viết chương trình trên C++, Python
 
 ![image](https://github.com/user-attachments/assets/5c631208-7ae3-4c13-b656-f565dc518c70)
 
+Giao tiếp giữa các module:
+(1) IQ signal stream of complex numbers at sampling rate
+(2) demoded s36kbit stream, each byte is 01 bit, at rate 36k samples per second
+(3) Tetra ACELP encoded speech frames (432 bits each): vector of 432 byte length, each byte represent 01 bit
+(4) raw speech data stream at rate 8ksps, each data sample is a int16 word
