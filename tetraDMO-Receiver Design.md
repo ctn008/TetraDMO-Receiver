@@ -14,3 +14,5 @@ Sau khi xem xét các lựa chọn tự viết chương trình trên C++, Python
 
 ## 3. Thiết kế chương trình:
 
+![image](https://github.com/user-attachments/assets/5c631208-7ae3-4c13-b656-f565dc518c70)
+
