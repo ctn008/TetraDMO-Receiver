@@ -23,3 +23,6 @@ Giao tiếp giữa các module:
 (3) Tetra ACELP encoded speech frames (216 bits each): vector of 432 byte length, each byte represent 01 bit  
 (4) raw speech data stream at rate 8ksps, each data sample is a int16 word  
 
+![image](https://github.com/user-attachments/assets/cf868bfb-4885-44e1-af11-936a3be15f99)
+
+
