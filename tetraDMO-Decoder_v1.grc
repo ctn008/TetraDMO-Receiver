@@ -11,7 +11,7 @@ options:
     gen_linking: dynamic
     generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: tetraDMO_Decoder
+    id: tetraDMO_Decoder_v1
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -22,7 +22,7 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: tetraDMO_Decoder
+    title: tetraDMO_Decoder_v1
     window_size: (1000,1000)
   states:
     bus_sink: false
@@ -198,12 +198,13 @@ blocks:
       \ the advantage of these headers can be stored together with data streams in\
       \ output files, maybe more convenient & easy for debug.\n\"\"\"\n\nimport numpy\
       \ as np\nfrom gnuradio import gr\n\nDSB = 1\nDNB = 2\nDNB_SF = 3\nINACTIVE =\
-      \ 0\n\nclass dmoBurstSync(gr.basic_block):  # other base classes are basic_block,\
-      \ decim_block, interp_block\n\n    NORMAL_TRAINING_SEQ_1       = (1,1,0,1,0,0,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0)\
-      \  # n1..n22\n    NORMAL_TRAINING_SEQ_2       = (0,1,1,1,1,0,1,0,0,1,0,0,0,0,1,1,0,1,1,1,1,0)\
-      \  # p1..p22\n    NORMAL_TRAINING_SEQ_3_BEGIN = (0,0,0,1,1,0,1,0,1,1,0,1)  \
-      \                    # q11..q22\n    NORMAL_TRAINING_SEQ_3_END   = (1,0,1,1,0,1,1,1,0,0)\
-      \                          # q1..q10\n\n    SYNC_TRAINING_SEQ = (1,1,0,0,0,0,0,1,1,0,0,1,1,1,0,0,1,1,1,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,1,1,1)\
+      \ 0\nBURST_IN = 510\nBURST_OUT = 680\n\nclass dmoBurstSync(gr.basic_block):\
+      \  # other base classes are basic_block, decim_block, interp_block\n\n    NORMAL_TRAINING_SEQ_1\
+      \       = (1,1,0,1,0,0,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0)  # n1..n22\n    NORMAL_TRAINING_SEQ_2\
+      \       = (0,1,1,1,1,0,1,0,0,1,0,0,0,0,1,1,0,1,1,1,1,0)  # p1..p22\n    NORMAL_TRAINING_SEQ_3_BEGIN\
+      \ = (0,0,0,1,1,0,1,0,1,1,0,1)                      # q11..q22\n    NORMAL_TRAINING_SEQ_3_END\
+      \   = (1,0,1,1,0,1,1,1,0,0)                          # q1..q10\n\n    SYNC_TRAINING_SEQ\
+      \ = (1,1,0,0,0,0,0,1,1,0,0,1,1,1,0,0,1,1,1,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,1,1,1)\
       \  # y1..y38\n\n    PREAMBLE_P1  =   (0,0,1,1,0,0,1,0,0,0,1,1)    # j1..j12\n\
       \    PREAMBLE_P2  =   (1,0,0,1,1,0,1,0,1,0,0,1)    # k1..k12\n    PREAMBLE_P3\
       \  =   (0,0,0,1,0,1,0,0,0,1,1,1)    # I1..I12\n\n    BURST_DETECT_THRESHOLD\
@@ -244,27 +245,25 @@ blocks:
       \     self.burstActive = False\n        self.burstSynced = False\n        self.firstDetect\
       \ = 0\n        self.in_pointer = 0        \n\n    def general_work(self, input_items,\
       \ output_items):\n\n        in_index = 0\n        out_index = 0\n\n        while\
-      \ (len(input_items[0]) >= in_index + 510) and (len(output_items[0]) >= out_index\
-      \ + 520):\n            # only process the code below if more than 510 input\
-      \ data samples\n            #DEBUG print(\"Input pointer at: \", self.in_pointer)\n\
-      \            if (not self.burstSynced):\n                for i in range(len(input_items[0])\
-      \ - in_index - 510 ): \n                    (burstType, scoreMin) = self.isValidBurst(input_items[0],\
+      \ (len(input_items[0]) >= in_index + BURST_IN) and (len(output_items[0]) >=\
+      \ out_index + BURST_OUT):\n            # only process the code below if more\
+      \ than 510 input data samples\n            if (not self.burstSynced):\n    \
+      \            for i in range(len(input_items[0]) - in_index - BURST_IN ): \n\
+      \                    (burstType, scoreMin) = self.isValidBurst(input_items[0],\
       \ in_index, i)\n\n                    if (burstType):\n                    \
       \    self.burstSynced = True\n                        self.firstDetect = self.in_pointer\n\
-      \                        #DEBUG\n                        print(\"first burst\
-      \ detected at: \", self.firstDetect)\n                        break   # break\
-      \ for loop if validBurst found\n                    self.in_pointer += 1\n \
-      \               in_index += i\n            else:          \n               \
-      \ (burstType, scoreMin) = self.isValidBurst(input_items[0], in_index, 0)\n \
-      \               if (burstType):\n                    self.burstActive = True\n\
-      \                else:\n                    self.burstActive = False\n\n   \
-      \             output_items[0][out_index] = burstType\n                output_items[0][out_index+1]\
+      \                        break   # break for loop if validBurst found\n    \
+      \                self.in_pointer += 1\n                in_index += i\n     \
+      \       else:          \n                (burstType, scoreMin) = self.isValidBurst(input_items[0],\
+      \ in_index, 0)\n                if (burstType):\n                    self.burstActive\
+      \ = True\n                else:\n                    self.burstActive = False\n\
+      \n                output_items[0][out_index] = burstType\n                output_items[0][out_index+1]\
       \ = scoreMin\n                output_items[0][out_index+2:out_index+10] = np.array([0]*8,\
       \ dtype = 'uint8')\n                if burstType :\n                    output_items[0][out_index+10:out_index+520]\
-      \ = input_items[0][in_index:in_index+510]\n                else:\n         \
-      \           output_items[0][out_index+10:out_index+520] = np.array([0]*510,\
-      \ dtype = 'uint8')\n                in_index += 510\n                self.in_pointer\
-      \ += 510\n                out_index += 520\n        self.consume(0, in_index)\
+      \ = input_items[0][in_index:in_index+BURST_IN]\n                else:\n    \
+      \                output_items[0][out_index+10:out_index+520] = np.array([0]*BURST_IN,\
+      \ dtype = 'uint8')\n                in_index += BURST_IN\n                self.in_pointer\
+      \ += BURST_IN\n                out_index += 520\n        self.consume(0, in_index)\
       \ #consume port 0 input\n        return out_index\n"
     affinity: ''
     alias: ''
@@ -384,23 +383,24 @@ blocks:
       \ of your block. The arguments to __init__  will\nbe the parameters. All of\
       \ them are required to have default values!\n\"\"\"\n\nimport numpy as np\n\
       from gnuradio import gr\nfrom ctypes import *\n\nDSB = 1\nDNB = 2\nDNB_SF =\
-      \ 3\nINACTIVE = 0\n\nclass tetraTime():\n    def __init__(self):\n        self.tn\
-      \ = 1\n        self.fn = 1\n        self.mn = 1\n    def timeIncrease(self):\n\
-      \        self.tn += 1\n        if self.tn > 4:\n            self.tn -= 4\n \
-      \           self.fn += 1\n        if self.fn > 18:\n            self.fn -= 18\n\
-      \            self.mn += 1\n        \nclass tetraCell():\n    def __init__(self):\n\
-      \        self.m_mcc               = 0\n        self.m_mnc               = 0\n\
-      \        self.m_colorCode         = 0\n        self.m_scramblingCode    = 0\n\
-      \        self.m_locationArea      = 0\n\n        self.m_downlinkFrequency =\
-      \ 0\n        self.m_uplinkFrequency   = 0\n\n        self.m_cellInformationsAcquired\
-      \ = False\n        \n    def updateScramblingCode(self, sourceAddress, mnIdentity):\
-      \ \n        self.m_mcc = mnIdentity >> 14\n        self.m_mnc = mnIdentity &\
-      \ 0x3ff\n\n        self.m_scramblingCode = sourceAddress | ((mnIdentity & 0x003f)\
-      \ << 24)\n        self.m_scramblingCode = (self.m_scramblingCode << 2) | 0x0003\n\
-      \n        self.m_cellInformationsAcquired = True\n\n    def getScramblingCode(self):\n\
-      \        return self.m_scramblingCode\n\nclass lowerMac(gr.basic_block):\n \
-      \   # C-type corresponding to numpy array \n    ND_POINTER = np.ctypeslib.ndpointer(dtype=np.uint8,\
-      \ ndim=1,flags=\"C\")\n    lib = cdll.LoadLibrary('/home/ctn008/tetraDMO-Receiver/codingLib.so')\
+      \ 3\nINACTIVE = 0\nBURST_IN = 520\nFRAME_OUT = 480\n\nclass tetraTime():\n \
+      \   def __init__(self):\n        self.tn = 1\n        self.fn = 1\n        self.mn\
+      \ = 1\n    def timeIncrease(self):\n        self.tn += 1\n        if self.tn\
+      \ > 4:\n            self.tn -= 4\n            self.fn += 1\n        if self.fn\
+      \ > 18:\n            self.fn -= 18\n            self.mn += 1\n        \nclass\
+      \ tetraCell():\n    def __init__(self):\n        self.m_mcc               =\
+      \ 0\n        self.m_mnc               = 0\n        self.m_colorCode        \
+      \ = 0\n        self.m_scramblingCode    = 0\n        self.m_locationArea   \
+      \   = 0\n\n        self.m_downlinkFrequency = 0\n        self.m_uplinkFrequency\
+      \   = 0\n\n        self.m_cellInformationsAcquired = False\n        \n    def\
+      \ updateScramblingCode(self, sourceAddress, mnIdentity): \n        self.m_mcc\
+      \ = mnIdentity >> 14\n        self.m_mnc = mnIdentity & 0x3ff\n\n        self.m_scramblingCode\
+      \ = sourceAddress | ((mnIdentity & 0x003f) << 24)\n        self.m_scramblingCode\
+      \ = (self.m_scramblingCode << 2) | 0x0003\n\n        self.m_cellInformationsAcquired\
+      \ = True\n\n    def getScramblingCode(self):\n        return self.m_scramblingCode\n\
+      \nclass lowerMac(gr.basic_block):\n    # C-type corresponding to numpy array\
+      \ \n    ND_POINTER = np.ctypeslib.ndpointer(dtype=np.uint8, ndim=1,flags=\"\
+      C\")\n    lib = cdll.LoadLibrary('/home/ctn008/tetraDMO-Receiver/codingLib.so')\
       \ # class level loading lib\n    lib.descramble_raw.argtypes = [ND_POINTER,\
       \ c_size_t, ND_POINTER, c_size_t, c_size_t]\n    lib.descramble_raw.restype\
       \ = c_size_t\n    lib.deinterleave_raw.argtypes = [ND_POINTER, c_size_t, ND_POINTER,\
@@ -450,11 +450,11 @@ blocks:
       \ )\n        #DEBUG print(\"Source address: \", self.sourceAddress, \"Destin\
       \ address: \", self.destinAddress)\n        \n    def general_work(self, input_items,\
       \ output_items):\n        in_index = 0\n        out_index = 0\n        while\
-      \ len(input_items[0]) - in_index >= 520:\n            print(\"MN:FN:TN = \"\
-      , self.m_tetraTime.mn,\":\",self.m_tetraTime.fn,\":\",self.m_tetraTime.tn, \"\
-      \ \", end ='')\n            if input_items[0][in_index] == DSB:\n          \
-      \      bkn1 = np.array(input_items[0][in_index+10+34+94 :in_index+10+34+94 +120])\n\
-      \                bkn2 = np.array(input_items[0][in_index+10+34+252:in_index+10+34+252+216])\n\
+      \ len(input_items[0]) - in_index >= BURST_IN:\n            print(\"MN:FN:TN\
+      \ = \", self.m_tetraTime.mn,\":\",self.m_tetraTime.fn,\":\",self.m_tetraTime.tn,\
+      \ \" \", end ='')\n            if input_items[0][in_index] == DSB:\n       \
+      \         bkn1 = np.array(input_items[0][in_index+10+34+94 :in_index+10+34+94\
+      \ +120])\n                bkn2 = np.array(input_items[0][in_index+10+34+252:in_index+10+34+252+216])\n\
       \n                bkn1 = lowerMac.descramble(bkn1, 120, 0x03)\n            \
       \    bkn1 = lowerMac.deinterleave(bkn1, 120, 11)\n                bkn1 = lowerMac.depuncture23(bkn1,\
       \ 120)\n                bkn1 = lowerMac.viterbiDecode1614(bkn1)\n\n        \
@@ -475,10 +475,11 @@ blocks:
       \                bkn1 = np.concatenate((bkn1, bkn2))\n                bkn1 =\
       \ lowerMac.descramble(bkn1, 432, self.m_tetraCell.getScramblingCode())\n   \
       \             \n                print(\"DNB\")\n                output_items[0][out_index:out_index+len(bkn1)]\
-      \ = bkn1\n                out_index += len(bkn1)\n                \n       \
-      \     elif input_items[0][in_index] == DNB_SF:\n                bkn1ValidFlag\
-      \ = False\n                bkn2ValidFlag = False\n\n                # BKN1 block\
-      \ - DMAC STCH \n                bkn1 = np.array(input_items[0][in_index+10+34+14\
+      \ = bkn1\n                out_index += FRAME_OUT\n                # last byte\
+      \ of FRAME indicates 0 = normal/full speech Frame\n                output_items[0][out_index-1]\
+      \ = 0\n                \n            elif input_items[0][in_index] == DNB_SF:\n\
+      \                bkn1ValidFlag = False\n                bkn2ValidFlag = False\n\
+      \n                # BKN1 block - DMAC STCH \n                bkn1 = np.array(input_items[0][in_index+10+34+14\
       \ :in_index+10+34+14 +216])\n                bkn1 = lowerMac.descramble(bkn1,\
       \ 216, self.m_tetraCell.getScramblingCode())\n                bkn1 = lowerMac.deinterleave(bkn1,\
       \ 216, 101)                                 \n                bkn1 = lowerMac.depuncture23(bkn1,\
@@ -488,34 +489,35 @@ blocks:
       \     bkn1ValidFlag = True\n\n                # BKN2 block - DMAC STCH or TCH/S\n\
       \                bkn2 = np.array(input_items[0][in_index+10+34+252:in_index+10+34+252+216])\n\
       \                bkn2 = lowerMac.descramble(bkn2, 216, self.m_tetraCell.getScramblingCode())\n\
-      \                bkn2 = lowerMac.deinterleave(bkn2, 216, 101)\n            \
-      \    bkn2 = lowerMac.depuncture23(bkn2, 216)\n                bkn2 = lowerMac.viterbiDecode1614(bkn2)\
-      \         \n                if (lowerMac.checkCrc16Ccitt(bkn2, 140)):      \
-      \   # check CRC if FALSE ==> TCH/S\n                    bkn2 = np.array(bkn1[:124])\n\
-      \                    bkn2ValidFlag = True;\n\n                print(\"DNB_SF\"\
-      )\n            \n                if (bkn1ValidFlag):\n                    pass\
-      \ # serviceUpperMac(Pdu(bkn1), DSTCH);                               // first\
-      \ block is stolen for C or U signalling\n                else:    # for debug\
-      \ purpose - display if CRC errors found\n                    printf(\"DNB_SF\
-      \ Burst CRC check errors found BKN1 TN/FN/MN: %u/%u/%u. \\n\\n\", getTime().tn,\
-      \ getTime().fn, getTime().mn);\n                \n                output_items[0][out_index:out_index+len(bkn1)]\
-      \ = np.array([0]*len(bkn1), dtype='uint8')\n                out_index += len(bkn1)\n\
-      \                \n                if (self.m_sfStolenFlag):        # if second-half\
-      \ slot is also stolen\n                    output_items[0][out_index:out_index+len(bkn2)]\
-      \ = bkn2[:]\n                    out_index += len(bkn2)\n                  \
-      \  if (bkn2ValidFlag):\n                        pass #serviceUpperMac(Pdu(bkn2),\
-      \ DSTCH);                           // second block also stolen, reset flag\n\
-      \                    else:\n                        printf(\"DNB_SF Burst CRC\
-      \ check errors found BKN2 TN/FN/MN: %u/%u/%u. \\n\\n\", getTime().tn, getTime().fn,\
-      \ getTime().mn);                    \n                else:\n              \
-      \      pass # serviceUpperMac(vectorExtract(data, 282, 216), DTCH_S);      //\
-      \ SF frame: data length only 216 bits\n                    output_items[0][out_index:out_index+len(bkn2)]\
-      \ = np.array([0]*len(bkn2), dtype='uint8')\n                    out_index +=\
-      \ len(bkn2)\n            else:\n                print(\"Inactive\")\n\n    \
-      \        #output_items[0][in_index:in_index+520] = input_items[0][in_index:in_index+520]\
-      \ \n            in_index += 520\n            self.burst_cnt += 1\n         \
-      \   self.m_tetraTime.timeIncrease()\n\n        self.consume(0, in_index) #consume\
-      \ port 0 input\n        return out_index\n"
+      \                bkn2_s = np.array(bkn2)\n                bkn2 = lowerMac.deinterleave(bkn2,\
+      \ 216, 101)\n                bkn2 = lowerMac.depuncture23(bkn2, 216)\n     \
+      \           bkn2 = lowerMac.viterbiDecode1614(bkn2)         \n             \
+      \   if (lowerMac.checkCrc16Ccitt(bkn2, 140)):         # check CRC if FALSE ==>\
+      \ TCH/S\n                    bkn2 = np.array(bkn1[:124])\n                 \
+      \   bkn2ValidFlag = True;\n\n                print(\"DNB_SF\")\n           \
+      \ \n                if (bkn1ValidFlag):\n                    pass # serviceUpperMac(Pdu(bkn1),\
+      \ DSTCH);                               // first block is stolen for C or U\
+      \ signalling\n                else:    # for debug purpose - display if CRC\
+      \ errors found\n                    printf(\"DNB_SF Burst CRC check errors found\
+      \ BKN1 TN/FN/MN: %u/%u/%u. \\n\\n\", getTime().tn, getTime().fn, getTime().mn);\n\
+      \                \n                output_items[0][out_index:out_index+216]\
+      \ = np.array([0]*216, dtype='uint8')\n                \n                if (self.m_sfStolenFlag):\
+      \        # if second-half slot is also stolen\n                    output_items[0][out_index+216:out_index+432]\
+      \ = np.array([0]*216, dtype='uint8')\n                    if (bkn2ValidFlag):\n\
+      \                        pass #serviceUpperMac(Pdu(bkn2), DSTCH);          \
+      \                 // second block also stolen, reset flag\n                \
+      \    else:\n                        printf(\"DNB_SF Burst CRC check errors found\
+      \ BKN2 TN/FN/MN: %u/%u/%u. \\n\\n\", getTime().tn, getTime().fn, getTime().mn);\
+      \                    \n                else:\n                    pass # serviceUpperMac(vectorExtract(data,\
+      \ 282, 216), DTCH_S);      // SF frame: data length only 216 bits\n        \
+      \            output_items[0][out_index+216:out_index+432] = bkn2_s[:]\n    \
+      \                out_index += len(bkn2)\n                out_index += FRAME_OUT\n\
+      \                # last byte of FRAME indicates 1 = stolen Frame\n         \
+      \       output_items[0][out_index-1] = 1\n            else:\n              \
+      \  print(\"Inactive\")\n\n            #output_items[0][in_index:in_index+520]\
+      \ = input_items[0][in_index:in_index+520] \n            in_index += BURST_IN\n\
+      \            self.burst_cnt += 1\n            self.m_tetraTime.timeIncrease()\n\
+      \n        self.consume(0, in_index) #consume port 0 input\n        return out_index\n"
     affinity: ''
     alias: ''
     comment: ''
@@ -586,7 +588,7 @@ blocks:
     marker9: '-1'
     name: '"lowerMac"'
     nconnections: '1'
-    size: view_step
+    size: view_step-40
     srate: samp_rate
     stemplot: 'False'
     style1: '1'

@@ -1,0 +1,27 @@
+gcc cdecoder.c          cdec_tet.c              sub_cd.c tetra_op.c -I. -Wall -g -O3 -o cdecoder
+
+gcc -shared -o tetraChDecoderLib.so cdec_tet.c sub_cd.c tetra_op.c -Iinclude/
+
+gcc -shared -o tetraChDecoderLib.so cdec_tet.c sub_cd.c tetra_op.c -Iinclude/
+/usr/bin/ld: /tmp/ccRG76rg.o: warning: relocation against `Best_previous' in read-only section `.text'
+/usr/bin/ld: /tmp/ccRG76rg.o: relocation R_X86_64_PC32 against symbol `TAB_CRC1' can not be used when making a shared object; recompile with -fPIC
+/usr/bin/ld: final link failed: bad value
+collect2: error: ld returned 1 exit status
+
+
+-fPIC	The -fPIC flag stands for 'Position Independent Code' generation
+
+
+FINAL COMMANDS:
+
+gcc -c -fPIC cdec_tet.c sub_cd.c tetra_op.c
+gcc -shared -o tetraChDecoderLib.so cdec_tet.o sub_cd.o tetra_op.o
+
+
+
+./cdecoder tetraDMO_01.out tetraDMO_01.cod
+./sdecoder tetraDMO_01.cod tetraDMO_01.raw
+sox -r 8k -e signed -b 16 tetraDMO_01.raw tetraDMO_01.wav
+
+ok, cdecoder operates correctly. 
+Now modify to DEBUG and output speech frames before and after Channel Coding.

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: tetraDMO_Decoder
+# Title: tetraDMO_Decoder_v1
 # Author: ctn008
 # GNU Radio version: 3.10.10.0
 
@@ -23,20 +23,20 @@ from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 import sip
-import tetraDMO_Decoder_epy_block_0 as epy_block_0  # embedded python block
-import tetraDMO_Decoder_epy_block_0_0 as epy_block_0_0  # embedded python block
-import tetraDMO_Decoder_epy_block_0_1_0 as epy_block_0_1_0  # embedded python block
-import tetraDMO_Decoder_epy_block_0_2 as epy_block_0_2  # embedded python block
-import tetraDMO_Decoder_epy_block_1 as epy_block_1  # embedded python block
+import tetraDMO_Decoder_v1_epy_block_0 as epy_block_0  # embedded python block
+import tetraDMO_Decoder_v1_epy_block_0_0 as epy_block_0_0  # embedded python block
+import tetraDMO_Decoder_v1_epy_block_0_1_0 as epy_block_0_1_0  # embedded python block
+import tetraDMO_Decoder_v1_epy_block_0_2 as epy_block_0_2  # embedded python block
+import tetraDMO_Decoder_v1_epy_block_1 as epy_block_1  # embedded python block
 
 
 
-class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
+class tetraDMO_Decoder_v1(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "tetraDMO_Decoder", catch_exceptions=True)
+        gr.top_block.__init__(self, "tetraDMO_Decoder_v1", catch_exceptions=True)
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("tetraDMO_Decoder")
+        self.setWindowTitle("tetraDMO_Decoder_v1")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -54,7 +54,7 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "tetraDMO_Decoder")
+        self.settings = Qt.QSettings("GNU Radio", "tetraDMO_Decoder_v1")
 
         try:
             geometry = self.settings.value("geometry")
@@ -82,7 +82,7 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
 
         self.top_layout.addWidget(_next_view_toggle_button)
         self.qtgui_time_sink_x_0_0_0 = qtgui.time_sink_f(
-            view_step, #size
+            (view_step-40), #size
             samp_rate, #samp_rate
             "lowerMac", #name
             1, #number of inputs
@@ -133,7 +133,7 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
         self.epy_block_0_2 = epy_block_0_2.speechDeccoder(example_param=1.0)
         self.epy_block_0_1_0 = epy_block_0_1_0.frameStep(step=view_step, change=next_view)
         self.epy_block_0_0 = epy_block_0_0.dmoBurstSync(dmoMode=True)
-        self.epy_block_0 = epy_block_0.blk(example_param=1.0)
+        self.epy_block_0 = epy_block_0.tetraChDecoder(example_param=1.0)
         self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_char*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_short*1)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/ctn008/0.Pluto/pluto_04_analysis/RxDMO_pluto_to_s36kBit_04.uint8', False, 0, 0)
@@ -156,7 +156,7 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
 
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "tetraDMO_Decoder")
+        self.settings = Qt.QSettings("GNU Radio", "tetraDMO_Decoder_v1")
         self.settings.setValue("geometry", self.saveGeometry())
         self.stop()
         self.wait()
@@ -188,7 +188,7 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
 
 
 
-def main(top_block_cls=tetraDMO_Decoder, options=None):
+def main(top_block_cls=tetraDMO_Decoder_v1, options=None):
 
     qapp = Qt.QApplication(sys.argv)
 

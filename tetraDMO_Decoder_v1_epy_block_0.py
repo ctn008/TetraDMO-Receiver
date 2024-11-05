@@ -7,7 +7,7 @@ import numpy as np
 from gnuradio import gr
 
 
-class blk(gr.sync_block):
+class tetraChDecoder(gr.sync_block):
     
     def __init__(self, example_param=1.0):
         gr.sync_block.__init__(

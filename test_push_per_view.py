@@ -5,14 +5,12 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: tetraDMO_Decoder
-# Author: ctn008
+# Title: Not titled yet
 # GNU Radio version: 3.10.10.0
 
 from PyQt5 import Qt
 from gnuradio import qtgui
 from gnuradio import blocks
-import pmt
 from gnuradio import gr
 from gnuradio.filter import firdes
 from gnuradio.fft import window
@@ -23,20 +21,16 @@ from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 import sip
-import tetraDMO_Decoder_epy_block_0 as epy_block_0  # embedded python block
-import tetraDMO_Decoder_epy_block_0_0 as epy_block_0_0  # embedded python block
-import tetraDMO_Decoder_epy_block_0_1_0 as epy_block_0_1_0  # embedded python block
-import tetraDMO_Decoder_epy_block_0_2 as epy_block_0_2  # embedded python block
-import tetraDMO_Decoder_epy_block_1 as epy_block_1  # embedded python block
+import test_push_per_view_epy_block_0_1_0 as epy_block_0_1_0  # embedded python block
 
 
 
-class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
+class test_push_per_view(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "tetraDMO_Decoder", catch_exceptions=True)
+        gr.top_block.__init__(self, "Not titled yet", catch_exceptions=True)
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("tetraDMO_Decoder")
+        self.setWindowTitle("Not titled yet")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -54,7 +48,7 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "tetraDMO_Decoder")
+        self.settings = Qt.QSettings("GNU Radio", "test_push_per_view")
 
         try:
             geometry = self.settings.value("geometry")
@@ -67,7 +61,7 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.view_step = view_step = 520*1
-        self.samp_rate = samp_rate = 36000
+        self.samp_rate = samp_rate = 32000
         self.next_view = next_view = 0
 
         ##################################################
@@ -81,25 +75,25 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
         self.next_view = _next_view_toggle_button
 
         self.top_layout.addWidget(_next_view_toggle_button)
-        self.qtgui_time_sink_x_0_0_0 = qtgui.time_sink_f(
+        self.qtgui_time_sink_x_0_0 = qtgui.time_sink_f(
             view_step, #size
             samp_rate, #samp_rate
-            "lowerMac", #name
+            "Push per Frame", #name
             1, #number of inputs
             None # parent
         )
-        self.qtgui_time_sink_x_0_0_0.set_update_time(0.10)
-        self.qtgui_time_sink_x_0_0_0.set_y_axis(-0.2, 3.2)
+        self.qtgui_time_sink_x_0_0.set_update_time(0.10)
+        self.qtgui_time_sink_x_0_0.set_y_axis(-0.2, 3.2)
 
-        self.qtgui_time_sink_x_0_0_0.set_y_label('Amplitude', "")
+        self.qtgui_time_sink_x_0_0.set_y_label('Amplitude', "")
 
-        self.qtgui_time_sink_x_0_0_0.enable_tags(True)
-        self.qtgui_time_sink_x_0_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0_0_0.enable_autoscale(False)
-        self.qtgui_time_sink_x_0_0_0.enable_grid(False)
-        self.qtgui_time_sink_x_0_0_0.enable_axis_labels(True)
-        self.qtgui_time_sink_x_0_0_0.enable_control_panel(False)
-        self.qtgui_time_sink_x_0_0_0.enable_stem_plot(False)
+        self.qtgui_time_sink_x_0_0.enable_tags(True)
+        self.qtgui_time_sink_x_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
+        self.qtgui_time_sink_x_0_0.enable_autoscale(False)
+        self.qtgui_time_sink_x_0_0.enable_grid(False)
+        self.qtgui_time_sink_x_0_0.enable_axis_labels(True)
+        self.qtgui_time_sink_x_0_0.enable_control_panel(False)
+        self.qtgui_time_sink_x_0_0.enable_stem_plot(False)
 
 
         labels = ['Push per Frame', 'Service lowerMac', 'Signal 3', 'Signal 4', 'Signal 5',
@@ -118,45 +112,32 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
 
         for i in range(1):
             if len(labels[i]) == 0:
-                self.qtgui_time_sink_x_0_0_0.set_line_label(i, "Data {0}".format(i))
+                self.qtgui_time_sink_x_0_0.set_line_label(i, "Data {0}".format(i))
             else:
-                self.qtgui_time_sink_x_0_0_0.set_line_label(i, labels[i])
-            self.qtgui_time_sink_x_0_0_0.set_line_width(i, widths[i])
-            self.qtgui_time_sink_x_0_0_0.set_line_color(i, colors[i])
-            self.qtgui_time_sink_x_0_0_0.set_line_style(i, styles[i])
-            self.qtgui_time_sink_x_0_0_0.set_line_marker(i, markers[i])
-            self.qtgui_time_sink_x_0_0_0.set_line_alpha(i, alphas[i])
+                self.qtgui_time_sink_x_0_0.set_line_label(i, labels[i])
+            self.qtgui_time_sink_x_0_0.set_line_width(i, widths[i])
+            self.qtgui_time_sink_x_0_0.set_line_color(i, colors[i])
+            self.qtgui_time_sink_x_0_0.set_line_style(i, styles[i])
+            self.qtgui_time_sink_x_0_0.set_line_marker(i, markers[i])
+            self.qtgui_time_sink_x_0_0.set_line_alpha(i, alphas[i])
 
-        self._qtgui_time_sink_x_0_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0_0.qwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_time_sink_x_0_0_0_win)
-        self.epy_block_1 = epy_block_1.lowerMac(mode=True)
-        self.epy_block_0_2 = epy_block_0_2.speechDeccoder(example_param=1.0)
+        self._qtgui_time_sink_x_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_time_sink_x_0_0_win)
         self.epy_block_0_1_0 = epy_block_0_1_0.frameStep(step=view_step, change=next_view)
-        self.epy_block_0_0 = epy_block_0_0.dmoBurstSync(dmoMode=True)
-        self.epy_block_0 = epy_block_0.blk(example_param=1.0)
-        self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_char*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
-        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_short*1)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/ctn008/0.Pluto/pluto_04_analysis/RxDMO_pluto_to_s36kBit_04.uint8', False, 0, 0)
-        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
-        self.blocks_char_to_float_0_0 = blocks.char_to_float(1, 1)
+        self.blocks_vector_source_x_0 = blocks.vector_source_b(([0]*view_step+[1]*(view_step//2) +[2]*(view_step//2) +[3]*(view_step//2)+[4]*(view_step //2 ) ), True, 1, [])
+        self.blocks_char_to_float_0_0_0 = blocks.char_to_float(1, 1)
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_char_to_float_0_0, 0), (self.qtgui_time_sink_x_0_0_0, 0))
-        self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle2_0, 0))
-        self.connect((self.blocks_throttle2_0, 0), (self.epy_block_0_0, 0))
-        self.connect((self.epy_block_0, 0), (self.epy_block_0_2, 0))
-        self.connect((self.epy_block_0_0, 0), (self.epy_block_0_1_0, 0))
-        self.connect((self.epy_block_0_1_0, 0), (self.epy_block_1, 0))
-        self.connect((self.epy_block_0_2, 0), (self.blocks_null_sink_0, 0))
-        self.connect((self.epy_block_1, 0), (self.blocks_char_to_float_0_0, 0))
-        self.connect((self.epy_block_1, 0), (self.epy_block_0, 0))
+        self.connect((self.blocks_char_to_float_0_0_0, 0), (self.qtgui_time_sink_x_0_0, 0))
+        self.connect((self.blocks_vector_source_x_0, 0), (self.epy_block_0_1_0, 0))
+        self.connect((self.epy_block_0_1_0, 0), (self.blocks_char_to_float_0_0_0, 0))
 
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "tetraDMO_Decoder")
+        self.settings = Qt.QSettings("GNU Radio", "test_push_per_view")
         self.settings.setValue("geometry", self.saveGeometry())
         self.stop()
         self.wait()
@@ -168,6 +149,7 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
 
     def set_view_step(self, view_step):
         self.view_step = view_step
+        self.blocks_vector_source_x_0.set_data(([0]*self.view_step+[1]*(self.view_step//2) +[2]*(self.view_step//2) +[3]*(self.view_step//2)+[4]*(self.view_step //2 ) ), [])
         self.epy_block_0_1_0.step = self.view_step
 
     def get_samp_rate(self):
@@ -175,8 +157,7 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.blocks_throttle2_0.set_sample_rate(self.samp_rate)
-        self.qtgui_time_sink_x_0_0_0.set_samp_rate(self.samp_rate)
+        self.qtgui_time_sink_x_0_0.set_samp_rate(self.samp_rate)
 
     def get_next_view(self):
         return self.next_view
@@ -188,7 +169,7 @@ class tetraDMO_Decoder(gr.top_block, Qt.QWidget):
 
 
 
-def main(top_block_cls=tetraDMO_Decoder, options=None):
+def main(top_block_cls=test_push_per_view, options=None):
 
     qapp = Qt.QApplication(sys.argv)
 
