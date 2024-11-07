@@ -1,0 +1,88 @@
+{
+	"backtrace" : 3,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"gr_unique_target",
+			"gr_python_install"
+		],
+		"files" : 
+		[
+			"/usr/local/lib/cmake/gnuradio/GrPython.cmake",
+			"python/DMO_TETRA/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 22,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 258,
+				"parent" : 1
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 197,
+				"parent" : 2
+			}
+		]
+	},
+	"id" : "pygen_python_DMO_TETRA_eec011e8750ddcb0482aeab7a9b8b1b0::@ed6ebeeb58372e36e0ec",
+	"name" : "pygen_python_DMO_TETRA_eec011e8750ddcb0482aeab7a9b8b1b0",
+	"paths" : 
+	{
+		"build" : "python/DMO_TETRA",
+		"source" : "python/DMO_TETRA"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 3,
+			"isGenerated" : true,
+			"path" : "build/python/DMO_TETRA/CMakeFiles/pygen_python_DMO_TETRA_eec011e8750ddcb0482aeab7a9b8b1b0",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/python/DMO_TETRA/CMakeFiles/pygen_python_DMO_TETRA_eec011e8750ddcb0482aeab7a9b8b1b0.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/python/DMO_TETRA/__init__.pyc.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}
