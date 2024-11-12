@@ -16,7 +16,7 @@
 ************************************************************************/
 
 #include "source.h"
-
+# include <stdio.h>
 /*----------------------------------------------------------------------*
  *         Coder constant parameters.                                   *
  *                                                                      *
@@ -116,6 +116,38 @@ static Word16 rr[dim_rr][dim_rr];
 Word16 last_ener_cod;
 Word16 last_ener_pit;
 
+
+/**************************************************************************
+*
+*	ROUTINE				:	Assign_Speech_Ptr
+*
+*	DESCRIPTION			:	Initialization of variables for the speech encoder
+*
+**************************************************************************
+*
+*	USAGE				:	Assign_Speech_Ptr(Word16 speech_ptr[])
+*
+*	INPUT ARGUMENT(S)		:	Word16 speech_ptr[]
+*
+*	OUTPUT ARGUMENT(S)		:	None
+*
+*	RETURNED VALUE		:	None
+*
+**************************************************************************/
+
+void Copy_Speech_Frame(Word16 speech_frame[])
+{
+  for (int i= 0; i <240; i++)
+    new_speech[i] = speech_frame[i];
+  return;
+}
+
+void Test_Assigned_Ptr()
+{
+  for (int i=0; i<5; i++)
+    printf("\nnew_speech[%d] = %d", i, new_speech[i]);
+  return;
+}
 
 /**************************************************************************
 *

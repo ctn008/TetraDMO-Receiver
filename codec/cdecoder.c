@@ -108,7 +108,7 @@ int	main( int argc, char *argv[] )
 		else
 		{
 			Desinterleaving_Speech(Interleaved_coded_array, Coded_array);
-		    printf("Interleaved: ");
+		    /*printf("Interleaved: ");
 			for (int i = 0; i < 432; i++)
 		        printf("0x%x, ",Interleaved_coded_array[i]);
     		printf("\n");
@@ -116,7 +116,7 @@ int	main( int argc, char *argv[] )
 			for (int i = 0; i < 432; i++)
 		        printf("0x%x, ",Coded_array[i]);
     		printf("\n");
-
+			*/
 		}
 		bfi1 = Frame_stealing;
 
@@ -130,7 +130,7 @@ int	main( int argc, char *argv[] )
 		first_pass = FALSE;
 		if ((Frame_stealing==0) && (bfi2==1)) bfi1=1;
 			/* Increment Loop counter */
-			Loop_counter++;
+		Loop_counter++;
 		/* Message in case the Bad Frame Indicator was set */
 		if (bfi2) fprintf(stderr,"Frame Nb %ld Bfi active\n\n",Loop_counter);
 

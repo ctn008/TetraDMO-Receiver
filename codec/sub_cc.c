@@ -55,7 +55,21 @@
 *	ARGUMENT(S)			:	
 *
 *		ARG1				:	- Description :	- (flag = 0) : standard mode
-*								- (flag  0) : frame stealing activated*						- Format : Word16**		ARG2				:	- Description : input serial stream containing*						parameters of 2 speech frames re-ordered in 3 *						sensitivity classes*							- Format : **	RETURNED VALUE		:	None**	COMMENTS			:	8 bit CRC is computed on the third sensitivity class***************************************************************************/Word16     Build_Crc(Word16 FS_Flag, Word16 Input_Frame[])
+*								- (flag  0) : frame stealing activated
+*						- Format : Word16
+*
+*		ARG2				:	- Description : input serial stream containing
+*						parameters of 2 speech frames re-ordered in 3 
+*						sensitivity classes
+*							- Format : 
+*
+*	RETURNED VALUE		:	None
+*
+*	COMMENTS			:	8 bit CRC is computed on the third sensitivity class
+*
+**************************************************************************/
+
+Word16     Build_Crc(Word16 FS_Flag, Word16 Input_Frame[])
 {
 /* Variables */
 Word16             i, temp;
@@ -177,7 +191,22 @@ else {
 *	INPUT ARGUMENT(S)		:	
 *
 *		INPUT1			:	- Description :	- (flag = 0) : standard mode
-*								- (flag  0) : frame stealing activated*							- Format : Word16**		INPUT2			:	- Description : 2 concatenated speech frames*							- Format : 274 * 16 bit-samples**	OUTPUT ARGUMENT(S)		:	**		OUTPUT1			:	- Description : 1 reordered frame*							- Format : 274 * 16 bit-samples**	RETURNED VALUE		:	None***************************************************************************/Word16     Build_Sensitivity_Classes(Word16 FS_Flag, Word16 Input_Frame[], Word16 Output_Frame[])
+*								- (flag  0) : frame stealing activated
+*							- Format : Word16
+*
+*		INPUT2			:	- Description : 2 concatenated speech frames
+*							- Format : 274 * 16 bit-samples
+*
+*	OUTPUT ARGUMENT(S)		:	
+*
+*		OUTPUT1			:	- Description : 1 reordered frame
+*							- Format : 274 * 16 bit-samples
+*
+*	RETURNED VALUE		:	None
+*
+**************************************************************************/
+
+Word16     Build_Sensitivity_Classes(Word16 FS_Flag, Word16 Input_Frame[], Word16 Output_Frame[])
 {
 /* Variables */
 Word16             i;
@@ -280,7 +309,18 @@ Word16             i, temp1, temp2, temp3;
 *	ARGUMENT(S)			:
 *
 *		ARG1				:	- Description :	- (flag = 0) : standard mode
-*								- (flag  0) : frame stealing activated*						- Format : Word16**		ARG2				:	- Description : Frame to be encoded*							- Format : 286 * 16 bit-samples**	RETURNED VALUE		:	None**	COMMENTS			:	4 zeroes are concatenated to the input buffer*							to clear the encoder ***************************************************************************/
+*								- (flag  0) : frame stealing activated
+*						- Format : Word16
+*
+*		ARG2				:	- Description : Frame to be encoded
+*							- Format : 286 * 16 bit-samples
+*
+*	RETURNED VALUE		:	None
+*
+*	COMMENTS			:	4 zeroes are concatenated to the input buffer
+*							to clear the encoder 
+*
+**************************************************************************/
 
 void	Init_Rcpc_Coding(Word16 FS_Flag, Word16 Input_Frame[])
 {
@@ -456,7 +496,20 @@ return(0);
 *	INPUT ARGUMENT(S)		:	
 *
 *		INPUT1			:	- Description :	- (flag = 0) : standard mode
-*								- (flag  0) : frame stealing activated*						- Format : Word16**		INPUT2			:	- Description : Frame to be encoded*							- Format : 286 * 16 bit-samples**	OUTPUT ARGUMENT(S)		:	**		OUTPUT1			:	- Description : Encoded frame*							- Format : 432 * 16 bit-samples**	RETURNED VALUE		:	None**	COMMENTS			:	- Buffer_in shall be ordered by 
+*								- (flag  0) : frame stealing activated
+*						- Format : Word16
+*
+*		INPUT2			:	- Description : Frame to be encoded
+*							- Format : 286 * 16 bit-samples
+*
+*	OUTPUT ARGUMENT(S)		:	
+*
+*		OUTPUT1			:	- Description : Encoded frame
+*							- Format : 432 * 16 bit-samples
+*
+*	RETURNED VALUE		:	None
+*
+*	COMMENTS			:	- Buffer_in shall be ordered by 
 * 						sensitivity classes :
 *							Class 0
 *							Class 1
@@ -636,7 +689,16 @@ else {
 *	ARGUMENT(S)			:	
 *
 *		ARG1				:	- Description :	- (flag = 0) : standard mode
-*								- (flag  0) : frame stealing activated*						- Format : Word16**		ARG2				:	- Description : Frame to be encoded*							- Format : 286 * 16 bit-samples**	RETURNED VALUE		:	None**	COMMENTS			:	Class 0 corresponds to the N0_2 first bits*						of the buffer (N0 in case of stealing)
+*								- (flag  0) : frame stealing activated
+*						- Format : Word16
+*
+*		ARG2				:	- Description : Frame to be encoded
+*							- Format : 286 * 16 bit-samples
+*
+*	RETURNED VALUE		:	None
+*
+*	COMMENTS			:	Class 0 corresponds to the N0_2 first bits
+*						of the buffer (N0 in case of stealing)
 *
 **************************************************************************/
 

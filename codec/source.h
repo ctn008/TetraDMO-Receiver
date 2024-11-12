@@ -87,6 +87,7 @@ void   Syn_Filt(Word16 a[], Word16 x[], Word16 y[], Word16 lg, Word16 mem[],
                 Word16 update);
 
 /* Specific coder functions */
+void Copy_Speech_Frame(Word16 speech_frame[]);  // ctn008 created to interface with Python GR calls
 
 void   Init_Coder_Tetra(void);
 void   Coder_Tetra(Word16 ana[], Word16 synth[]);

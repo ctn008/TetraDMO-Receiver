@@ -118,6 +118,9 @@ int main(int argc, char *argv[] )
 											 speech */
 
     Coder_Tetra(ana, syn);              /* Find speech parameters         */
+    printf("\nana=");
+    for (int i=0; i<ana_size; i++)
+      printf("%d, ", ana[i]);
 
     Post_Process(syn, (Word16)L_frame); /* Post processing of synthesis   */
 
