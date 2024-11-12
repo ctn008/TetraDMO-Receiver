@@ -25,4 +25,21 @@ Giao tiếp giữa các module:
 
 ![image](https://github.com/user-attachments/assets/cf868bfb-4885-44e1-af11-936a3be15f99)
 
+## 4. Triển khai 
+tetraDMO-Decoder_v0 triển khai 02 block:
+- DmoBurstDetect: kiểm tra phát hiện các DmoBurst, và chuyển các burst này ra khối tiếp theo, với phân loại burst DSB, DNB, DNB_SF, gửi đi trên 520 burst data (510 data bytes + 10 header bytes). 
+- serviceLowerMac/UpperMac: thực hiện giải mã và lọc ra các u-plane speech frame để đưa sang speech decoder.
+- Các khối TetraACELP Channel Decoder và TetraACELP Speech Decoder là dummy. Dự kiến là các sync blocks.
+- Button Push_to_view để đưa dữ liệu ra theo từng burst, phục vụ việc kiểm tra. Khi mỗi burst được xử lý, thông số loại burst được hiển thị trong cửa số dòng lệnh GR. Có thể thử chạy với file dữ liệu s36kBit đầu ra của điều chế pi4dqpsk.
+ 
+![image](https://github.com/user-attachments/assets/cd6743c3-7b71-4c6a-bae9-42495960ee41)
 
+tetraDMO-Decoder_v1 triển khai đầy đủ cả 04 khối, đầu vào là file s36kBit và đầu ra là tín hiệu audio được giải mã và đẩy ra loa máy tính.
+
+![image](https://github.com/user-attachments/assets/f829d29e-be18-44f3-ad71-301e5fca82b4)
+
+Để gửi signaling data giữa các block, extra bits được sử dụng.
+- DmoBurstDetect dùng 2 byte cuối (thực chất chỉ dùng 1 byte) để xác định loại burst 
+- serviceMac dùng 1 bit cuối để xác định burst có Frame Stealing hay không.
+
+Cần kiểm tra xem việc xử lý frame stealing của tín hiệu audio đã đúng chưa (khi frame stealing của 1/2 burst, còn 1/2 burst còn lại là voice traffic, thì vocice này có được đưa sang speech decoder để decode không ? 
