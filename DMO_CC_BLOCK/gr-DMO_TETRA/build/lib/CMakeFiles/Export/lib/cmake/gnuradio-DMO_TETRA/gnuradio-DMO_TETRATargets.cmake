@@ -55,7 +55,7 @@ add_library(gnuradio::gnuradio-DMO_TETRA SHARED IMPORTED)
 
 set_target_properties(gnuradio::gnuradio-DMO_TETRA PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
-  INTERFACE_LINK_LIBRARIES "gnuradio::gnuradio-runtime"
+  INTERFACE_LINK_LIBRARIES "gnuradio::gnuradio-runtime;fftw3"
 )
 
 if(CMAKE_VERSION VERSION_LESS 2.8.12)

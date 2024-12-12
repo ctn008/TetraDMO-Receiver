@@ -1,4 +1,4 @@
-# Install script for directory: /home/von/tetraDMO-Receiver/gr-DMO_TETRA/lib
+# Install script for directory: /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/lib
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "Debug")
+    set(CMAKE_INSTALL_CONFIG_NAME "Release")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -55,8 +55,8 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
     endif()
   endforeach()
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES
-    "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/lib/libgnuradio-DMO_TETRA.so.1.0.0.0"
-    "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/lib/libgnuradio-DMO_TETRA.so.1.0.0"
+    "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/lib/libgnuradio-DMO_TETRA.so.1.0.0.0"
+    "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/lib/libgnuradio-DMO_TETRA.so.1.0.0"
     )
   foreach(file
       "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libgnuradio-DMO_TETRA.so.1.0.0.0"
@@ -82,7 +82,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libgnuradio-DMO_TETRA.so"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/lib/libgnuradio-DMO_TETRA.so")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/lib/libgnuradio-DMO_TETRA.so")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libgnuradio-DMO_TETRA.so" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libgnuradio-DMO_TETRA.so")
     file(RPATH_CHANGE
@@ -99,7 +99,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/cmake/gnuradio-DMO_TETRA/gnuradio-DMO_TETRATargets.cmake")
     file(DIFFERENT EXPORT_FILE_CHANGED FILES
          "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/cmake/gnuradio-DMO_TETRA/gnuradio-DMO_TETRATargets.cmake"
-         "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/lib/CMakeFiles/Export/lib/cmake/gnuradio-DMO_TETRA/gnuradio-DMO_TETRATargets.cmake")
+         "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/lib/CMakeFiles/Export/lib/cmake/gnuradio-DMO_TETRA/gnuradio-DMO_TETRATargets.cmake")
     if(EXPORT_FILE_CHANGED)
       file(GLOB OLD_CONFIG_FILES "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/cmake/gnuradio-DMO_TETRA/gnuradio-DMO_TETRATargets-*.cmake")
       if(OLD_CONFIG_FILES)
@@ -108,13 +108,13 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
       endif()
     endif()
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/gnuradio-DMO_TETRA" TYPE FILE FILES "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/lib/CMakeFiles/Export/lib/cmake/gnuradio-DMO_TETRA/gnuradio-DMO_TETRATargets.cmake")
-  if("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Dd][Ee][Bb][Uu][Gg])$")
-    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/gnuradio-DMO_TETRA" TYPE FILE FILES "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/lib/CMakeFiles/Export/lib/cmake/gnuradio-DMO_TETRA/gnuradio-DMO_TETRATargets-debug.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/gnuradio-DMO_TETRA" TYPE FILE FILES "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/lib/CMakeFiles/Export/lib/cmake/gnuradio-DMO_TETRA/gnuradio-DMO_TETRATargets.cmake")
+  if("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/gnuradio-DMO_TETRA" TYPE FILE FILES "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/lib/CMakeFiles/Export/lib/cmake/gnuradio-DMO_TETRA/gnuradio-DMO_TETRATargets-release.cmake")
   endif()
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/gnuradio-DMO_TETRA" TYPE FILE FILES "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/lib/cmake/Modules/gnuradio-DMO_TETRAConfig.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/gnuradio-DMO_TETRA" TYPE FILE FILES "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/lib/cmake/Modules/gnuradio-DMO_TETRAConfig.cmake")
 endif()
 

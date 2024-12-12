@@ -21,8 +21,7 @@ namespace py = pybind11;
 // Please do not delete
 /**************************************/
 // BINDING_FUNCTION_PROTOTYPES(
-    void bind_DMO_burst_extract(py::module& m);
-    void bind_mac_extract(py::module& m);
+    void bind_MAC_DECODER_LAYER_2_3(py::module& m);
 // ) END BINDING_FUNCTION_PROTOTYPES
 
 
@@ -51,7 +50,6 @@ PYBIND11_MODULE(DMO_TETRA_python, m)
     // Please do not delete
     /**************************************/
     // BINDING_FUNCTION_CALLS(
-    bind_DMO_burst_extract(m);
-    bind_mac_extract(m);
+    bind_MAC_DECODER_LAYER_2_3(m);
     // ) END BINDING_FUNCTION_CALLS
 }

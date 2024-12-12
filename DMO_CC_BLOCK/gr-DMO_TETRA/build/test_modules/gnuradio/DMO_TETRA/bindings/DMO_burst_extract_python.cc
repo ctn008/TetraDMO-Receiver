@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(DMO_burst_extract.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(c9afdc220da1c42b58daeb33dc5919c0)                     */
+/* BINDTOOL_HEADER_FILE_HASH(3ab8e3bd10d7b53c292ce714665f880f)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -52,15 +52,6 @@ void bind_DMO_burst_extract(py::module& m)
     ;
 
     py::implicitly_convertible<int, ::gr::DMO_TETRA::OperationMode>();
-    py::enum_<::gr::DMO_TETRA::BurstType>(m,"BurstType")
-        .value("INACTIVE", ::gr::DMO_TETRA::BurstType::INACTIVE) // 0
-        .value("DSB", ::gr::DMO_TETRA::BurstType::DSB) // 1
-        .value("DNB", ::gr::DMO_TETRA::BurstType::DNB) // 2
-        .value("DNB_SF", ::gr::DMO_TETRA::BurstType::DNB_SF) // 3
-        .export_values()
-    ;
-
-    py::implicitly_convertible<int, ::gr::DMO_TETRA::BurstType>();
 
 
 

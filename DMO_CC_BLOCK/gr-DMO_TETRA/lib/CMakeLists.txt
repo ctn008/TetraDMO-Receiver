@@ -10,10 +10,13 @@
 # Setup library
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
-
 list(APPEND DMO_TETRA_sources
-    DMO_burst_extract_impl.cc
-    mac_extract_impl.cc)
+    common_lib.cc
+    Pdu.cc
+    tetracell.cc 
+    uplane.cc 
+    viterbicodec.cc
+    MAC_DECODER_LAYER_2_3_impl.cc )
 
 set(DMO_TETRA_sources
     "${DMO_TETRA_sources}"
@@ -24,20 +27,21 @@ if(NOT DMO_TETRA_sources)
 endif(NOT DMO_TETRA_sources)
 
 add_library(gnuradio-DMO_TETRA SHARED ${DMO_TETRA_sources})
-target_link_libraries(gnuradio-DMO_TETRA gnuradio::gnuradio-runtime)
+target_link_libraries(gnuradio-DMO_TETRA gnuradio::gnuradio-runtime fftw3)
 target_include_directories(
     gnuradio-DMO_TETRA
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/cmce>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/common>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/llc>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/mac>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/mle>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/mm>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/sndcp>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/uplane>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/wiremsg>
     PUBLIC $<INSTALL_INTERFACE:include>)
+
+# PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..//include/cmce>
+# PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..//include/common>
+# PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..//include/llc>
+# PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..//include/mac>
+# PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..//include/mle>
+# PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..//include/mm>
+# PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..//include/sndcp>
+# PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..//include/uplane>
+# PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..//include/wiremsg>
 set_target_properties(gnuradio-DMO_TETRA PROPERTIES DEFINE_SYMBOL "gnuradio_DMO_TETRA_EXPORTS")
 
 if(APPLE)

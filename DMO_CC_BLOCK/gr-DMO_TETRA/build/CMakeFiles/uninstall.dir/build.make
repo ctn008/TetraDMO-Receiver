@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/von/tetraDMO-Receiver/gr-DMO_TETRA
+CMAKE_SOURCE_DIR = /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/von/tetraDMO-Receiver/gr-DMO_TETRA/build
+CMAKE_BINARY_DIR = /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build
 
 # Utility rule file for uninstall.
 
@@ -67,7 +67,7 @@ include CMakeFiles/uninstall.dir/compiler_depend.make
 include CMakeFiles/uninstall.dir/progress.make
 
 CMakeFiles/uninstall:
-	/usr/bin/cmake -P /home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/cmake_uninstall.cmake
+	/usr/bin/cmake -P /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/cmake_uninstall.cmake
 
 uninstall: CMakeFiles/uninstall
 uninstall: CMakeFiles/uninstall.dir/build.make
@@ -82,6 +82,6 @@ CMakeFiles/uninstall.dir/clean:
 .PHONY : CMakeFiles/uninstall.dir/clean
 
 CMakeFiles/uninstall.dir/depend:
-	cd /home/von/tetraDMO-Receiver/gr-DMO_TETRA/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/von/tetraDMO-Receiver/gr-DMO_TETRA /home/von/tetraDMO-Receiver/gr-DMO_TETRA /home/von/tetraDMO-Receiver/gr-DMO_TETRA/build /home/von/tetraDMO-Receiver/gr-DMO_TETRA/build /home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/CMakeFiles/uninstall.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/CMakeFiles/uninstall.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/uninstall.dir/depend
 

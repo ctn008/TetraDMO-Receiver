@@ -1,4 +1,4 @@
-# Install script for directory: /home/von/tetraDMO-Receiver/gr-DMO_TETRA/grc
+# Install script for directory: /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/grc
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "Debug")
+    set(CMAKE_INSTALL_CONFIG_NAME "Release")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -43,9 +43,6 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gnuradio/grc/blocks" TYPE FILE FILES
-    "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/grc/DMO_TETRA_DMO_burst_extract.block.yml"
-    "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/grc/DMO_TETRA_mac_extract.block.yml"
-    )
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gnuradio/grc/blocks" TYPE FILE FILES "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/grc/DMO_TETRA_MAC_DECODER_LAYER_2_3.block.yml")
 endif()
 

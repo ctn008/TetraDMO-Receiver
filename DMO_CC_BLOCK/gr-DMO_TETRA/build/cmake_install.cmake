@@ -1,4 +1,4 @@
-# Install script for directory: /home/von/tetraDMO-Receiver/gr-DMO_TETRA
+# Install script for directory: /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "Debug")
+    set(CMAKE_INSTALL_CONFIG_NAME "Release")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -43,22 +43,22 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/gnuradio-DMO_TETRA" TYPE FILE FILES "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/cmake/Modules/gnuradio-DMO_TETRAConfig.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/gnuradio-DMO_TETRA" TYPE FILE FILES "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/cmake/Modules/gnuradio-DMO_TETRAConfig.cmake")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gnuradio/manifests/DMO_TETRA" TYPE FILE RENAME "MANIFEST-1.0.00.yml" FILES "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/MANIFEST.yml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gnuradio/manifests/DMO_TETRA" TYPE FILE RENAME "MANIFEST-1.0.00.yml" FILES "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/MANIFEST.yml")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/include/gnuradio/DMO_TETRA/cmake_install.cmake")
-  include("/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/lib/cmake_install.cmake")
-  include("/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/apps/cmake_install.cmake")
-  include("/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/examples/cmake_install.cmake")
-  include("/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/docs/cmake_install.cmake")
-  include("/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/python/DMO_TETRA/cmake_install.cmake")
-  include("/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/grc/cmake_install.cmake")
+  include("/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/include/gnuradio/DMO_TETRA/cmake_install.cmake")
+  include("/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/lib/cmake_install.cmake")
+  include("/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/apps/cmake_install.cmake")
+  include("/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/examples/cmake_install.cmake")
+  include("/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/docs/cmake_install.cmake")
+  include("/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/python/DMO_TETRA/cmake_install.cmake")
+  include("/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/grc/cmake_install.cmake")
 
 endif()
 
@@ -70,5 +70,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/von/tetraDMO-Receiver/gr-DMO_TETRA/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

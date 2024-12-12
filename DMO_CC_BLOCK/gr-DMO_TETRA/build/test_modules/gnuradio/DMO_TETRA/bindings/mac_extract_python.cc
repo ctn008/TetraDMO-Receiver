@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(mac_extract.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(a14c7670df27cd3df173b4a0d65c53fd)                     */
+/* BINDTOOL_HEADER_FILE_HASH(2d4488844e6ebc2579b612181cf1ac56)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -45,26 +45,6 @@ void bind_mac_extract(py::module& m)
 
         ;
 
-    py::enum_<::gr::DMO_TETRA::MacLogicalChannel>(m,"MacLogicalChannel")
-        .value("AACH", ::gr::DMO_TETRA::MacLogicalChannel::AACH) // 0
-        .value("BLCH", ::gr::DMO_TETRA::MacLogicalChannel::BLCH) // 1
-        .value("BNCH", ::gr::DMO_TETRA::MacLogicalChannel::BNCH) // 2
-        .value("BSCH", ::gr::DMO_TETRA::MacLogicalChannel::BSCH) // 3
-        .value("SCH_F", ::gr::DMO_TETRA::MacLogicalChannel::SCH_F) // 4
-        .value("SCH_HD", ::gr::DMO_TETRA::MacLogicalChannel::SCH_HD) // 5
-        .value("STCH", ::gr::DMO_TETRA::MacLogicalChannel::STCH) // 6
-        .value("TCH_S", ::gr::DMO_TETRA::MacLogicalChannel::TCH_S) // 7
-        .value("TCH", ::gr::DMO_TETRA::MacLogicalChannel::TCH) // 8
-        .value("unknown", ::gr::DMO_TETRA::MacLogicalChannel::unknown) // 9
-        .value("DSCH_SH", ::gr::DMO_TETRA::MacLogicalChannel::DSCH_SH) // 10
-        .value("DSCH_F", ::gr::DMO_TETRA::MacLogicalChannel::DSCH_F) // 12
-        .value("DSTCH", ::gr::DMO_TETRA::MacLogicalChannel::DSTCH) // 13
-        .value("DTCH_S", ::gr::DMO_TETRA::MacLogicalChannel::DTCH_S) // 14
-        .value("DLCH", ::gr::DMO_TETRA::MacLogicalChannel::DLCH) // 15
-        .export_values()
-    ;
-
-    py::implicitly_convertible<int, ::gr::DMO_TETRA::MacLogicalChannel>();
 
 
 
