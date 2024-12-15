@@ -12,7 +12,7 @@ IN_STEP = 480
 OUT_STEP = 480
 
 class tetraChDecoder(gr.sync_block):
-    lib = cdll.LoadLibrary('/home/ctn008/tetraDMO-Receiver/codec/tetraChDecoderLib.so') # class level loading lib
+    lib = cdll.LoadLibrary('/home/von/new/tetraDMO-Receiver/codec/tetraChDecoderLib.so') # class level loading lib
 
     # C-type corresponding to numpy array 
     ND_POINTER = np.ctypeslib.ndpointer(dtype=np.int16, 

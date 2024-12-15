@@ -11,9 +11,7 @@
 namespace gr {
   namespace DMO_TETRA {
 
-    #pragma message("set the following appropriately and remove this warning")
     using input_type = uint8_t;
-    #pragma message("set the following appropriately and remove this warning")
     using output_type = uint8_t;
     MAC_DECODER_LAYER_2_3::sptr
     MAC_DECODER_LAYER_2_3::make()
@@ -31,8 +29,7 @@ namespace gr {
               gr::io_signature::make(1 /* min inputs */, 1 /* max inputs */, sizeof(input_type)),
               gr::io_signature::make(1 /* min outputs */, 1 /*max outputs */, sizeof(output_type)))
     {
-    in_index = 0;
-    out_index = 0;
+
     // create TetraCell object
     m_tetraCell = std::make_shared<TetraCell>();
     m_Uplane = std::make_shared<UPlane>();
@@ -66,38 +63,50 @@ namespace gr {
       auto in = static_cast<const input_type*>(input_items[0]);
       auto out_stream = static_cast<output_type*>(output_items[0]);
       BurstType burst_type;
+      int scoreDesync;
+      int in_index = 0;
+      int out_index = 0;
 
-      while(noutput_items >= out_index + 480)
+      int ninput_items = nitems_read(0);
+      std::cout <<ninput_items<< "\n";
+
+      while((ninput_items >= in_index + 512) && (noutput_items >= out_index + 480))
       {        
-        std::vector<uint8_t> bkn1;  
-        std::vector<uint8_t> bkn2;
-        std::vector<uint8_t> temp(512);
+        uint8_t type = in[in_index + 510];
+        uint8_t scoreMin = in[in_index + 511];
+        burst_type = static_cast<BurstType>(type); // cast out Burst Type from bit 10
+        scoreDesync = static_cast<int>(scoreMin);
 
-        std::copy(in + in_index, in + in_index+512, temp.begin()); // buffer 
-        // printf("data_start \n");
-        int pos = 0;
-        std::vector<uint8_t> type = vectorExtract(temp,510,1);
-        burst_type = static_cast<BurstType>(type[0]); // cast out Burst Type from bit 10
         if(burst_type == DNB || burst_type == DNB_SF)
         {
-        pos += 48;
-        bkn1 = vectorExtract(temp,pos,216); //take out BKN 1
-        pos += 238;               //216 + 22
-        bkn2 = vectorExtract(temp,pos,216); //take out BKN 2
+        std::vector<uint8_t> bkn1(216);  
+        std::vector<uint8_t> bkn2(216);
+
+        std::cout<<"input items: " << in_index << "\n";
+        std::cout<<"output items: " << out_index << "\n";
+        std::cout<<"scoreDesync: " << scoreDesync << "\n";
+
+        std::copy(in + in_index + 48, in + in_index + 264, bkn1.begin());
+        std::copy(in + in_index + 286, in + in_index + 502, bkn2.begin());
+        Mac_channel_decode(bkn1,bkn2,burst_type, out_stream, out_index);
         }
         else if(burst_type == DSB)
         {
-        pos += 128;
-        bkn1 = vectorExtract(temp,pos,120);
-        pos += 158;               //120 + 38 
-        bkn2 = vectorExtract(temp,pos,216);
+        std::cout<<"input items: " << in_index << "\n";
+        std::cout<<"output items: " << out_index << "\n";
+        std::cout<<"scoreDesync: " << scoreDesync << "\n";
+
+        std::vector<uint8_t> bkn1(120);  
+        std::vector<uint8_t> bkn2(216);
+
+        std::copy(in + in_index + 128, in + in_index + 248, bkn1.begin());
+        std::copy(in + in_index + 286, in + in_index + 502, bkn2.begin());
+        Mac_channel_decode(bkn1,bkn2,burst_type, out_stream, out_index);
         }
 
-        Mac_channel_decode(bkn1,bkn2,burst_type, out_stream);
-
-        consume_each(out_index);
-        in_index +=512;
+        in_index +=512; 
       }
+      consume_each(in_index);
       return noutput_items;
     }
 
@@ -111,19 +120,19 @@ namespace gr {
       std::cout <<" \n";
     }
 
-    void MAC_DECODER_LAYER_2_3_impl::Mac_channel_decode(std::vector<uint8_t> bkn1,std::vector<uint8_t> bkn2, BurstType type, uint8_t *out)
+    void MAC_DECODER_LAYER_2_3_impl::Mac_channel_decode(std::vector<uint8_t> bkn1,std::vector<uint8_t> bkn2, BurstType type, uint8_t *out, int &out_index)
     {
       switch(type)
       {
         case DSB:
         {
           std::cout<<"DSB detected \n";
-          bkn1 = descramble(bkn1,120,0x03);
+          bkn1 = descramble(bkn1,120,0x0003);
           bkn1 = deinterleave(bkn1,120,11);
           bkn1 = depuncture23(bkn1,120);
           bkn1 = viterbiDecode1614(bkn1);
 
-          bkn2 = descramble(bkn2,216,0x03);
+          bkn2 = descramble(bkn2,216,0x0003);
           bkn2 = deinterleave(bkn2,216,101);
           bkn2 = depuncture23(bkn2,216);
           bkn2 = viterbiDecode1614(bkn2);
@@ -137,14 +146,16 @@ namespace gr {
           }
           else
           {
-            resource_check(bkn1);
+            std::cout<<"CRC BKN1: " << checkCrc16Ccitt(bkn1,76) << "\n";
+            std::cout<<"CRC BKN2: " << checkCrc16Ccitt(bkn2,140)<< "\n";
+
           }
           break;
         }
 
         case DNB:
         {
-          std::cout<<"DNB detected \n";
+          // std::cout<<"DNB detected \n";
           bkn1 = vectorAppend(bkn1,bkn2);
           bkn1 = descramble(bkn1, 432, m_tetraCell->getScramblingCode());
           Mac_service(bkn1,DTCH_S,out, out_index);
@@ -167,7 +178,9 @@ namespace gr {
             bkn1 = vectorExtract(bkn1,0,124);
             bkn1valid = true;
           }
-          else{std::cout<<"CRC failed for bkn1 \n";}
+          else{
+            std::cout<<"CRC failed for bkn1 \n";
+            }
 
           bkn2 = descramble(bkn2,216,m_tetraCell->getScramblingCode());
           std::vector<uint8_t> bkn2_U = bkn2;
@@ -192,13 +205,13 @@ namespace gr {
           {
             if(bkn2valid)
             {
-              Mac_service(bkn2_U,DSTCH,out,out_index); //DSTCH called
+              Mac_service(bkn2,DSTCH,out,out_index); //DSTCH called
             }
           }
           else
           {
             std::cout<<"bkn2 belongs to DTCH/s \n";
-            Mac_service(bkn2,DTCH_S,out,out_index,m_tetraCell->getStolenFlag()); //DTCH_S called
+            Mac_service(bkn2_U,DTCH_S,out,out_index,m_tetraCell->getStolenFlag()); //DTCH_S called
           }
           break;
         }
@@ -320,6 +333,7 @@ namespace gr {
 
           if ((mnIdentity != 0) && (sourceAddress != 0))      // only updateScramblingCode if valid data
           {
+              std::cout<<"Scrambling code is: " << m_tetraCell->getScramblingCode() << "\n";
               m_tetraCell->updateScramblingCode(sourceAddress, mnIdentity);
           }
       } 

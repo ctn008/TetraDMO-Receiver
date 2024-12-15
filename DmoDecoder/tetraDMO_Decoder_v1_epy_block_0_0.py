@@ -129,11 +129,11 @@ class dmoBurstSync(gr.basic_block):  # other base classes are basic_block, decim
                     output_items[0][out_index:out_index+IN_STEP] = input_items[0][in_index:in_index+IN_STEP]
                 else:
                     output_items[0][out_index:out_index+IN_STEP] = np.array([0]*IN_STEP, dtype = 'uint8')
-
+                    
+                in_index += IN_STEP
                 output_items[0][out_index+IN_STEP]   = burstType
                 output_items[0][out_index+IN_STEP+1] = scoreMin
-
-                in_index += IN_STEP
+                
                 self.in_pointer += IN_STEP
                 out_index += OUT_STEP
         self.consume(0, in_index) #consume port 0 input

@@ -27,8 +27,6 @@ namespace gr {
       TetraTime m_tetraTime;
 
      public:
-      int in_index;
-      int out_index;
       MAC_DECODER_LAYER_2_3_impl();
       ~MAC_DECODER_LAYER_2_3_impl();
 
@@ -39,7 +37,9 @@ namespace gr {
               gr_vector_void_star &output_items
       );
 
-      void Mac_channel_decode(std::vector<uint8_t> bkn1, std::vector<uint8_t> bkn2, BurstType type, uint8_t *out);
+      std::vector<uint8_t> START_PATTERN = {0,1,0,1,0,1,0,1};
+
+      void Mac_channel_decode(std::vector<uint8_t> bkn1, std::vector<uint8_t> bkn2, BurstType type, uint8_t *out, int &out_index);
       void Mac_service(Pdu pdu, MacLogicalChannel LogicalChannel, uint8_t *out, int &out_index);
       void Mac_service(Pdu pdu, MacLogicalChannel LogicalChannel, uint8_t *out, int &out_index, bool stolenflag);
       Pdu  pduProcessDmacSync(const Pdu pdu);
