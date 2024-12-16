@@ -10,6 +10,8 @@ Issues:
 
 - Incorrect burst decoding after an amount of time running. 
 
+*Notice: Testing process are being done in test_CPP_BLOCK_DmoDecoder.grc
+
 # Guide:
 
 - Navigate into working folder: gr-DMO_TETRA
