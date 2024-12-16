@@ -10,7 +10,7 @@ Issues:
 
 - Incorrect burst decoding after an amount of time running. 
 
-*Notice: Testing process are being done in test_CPP_BLOCK_DmoDecoder.grc
+*Notice: Testing process are being done in tetraDMO-Receiver/DmoDecoder/test_CPP_BLOCK_DmoDecoder.grc
 
 # Guide:
 
