@@ -24,7 +24,8 @@ include(GrPybind)
 # Python Bindings
 ########################################################################
 list(APPEND DMO_TETRA_python_files
-    MAC_DECODER_LAYER_2_3_python.cc python_bindings.cc)
+    MAC_DECODER_LAYER_2_3_python.cc
+    MAC_DECODER_python.cc python_bindings.cc)
 
 gr_pybind_make_oot(DMO_TETRA ../../.. gr::DMO_TETRA "${DMO_TETRA_python_files}")
 

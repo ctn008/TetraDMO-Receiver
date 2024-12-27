@@ -19,7 +19,7 @@ add_subdirectory(bindings)
 ########################################################################
 # Install python sources
 ########################################################################
-gr_python_install(FILES __init__.py DESTINATION ${GR_PYTHON_DIR}/gnuradio/DMO_TETRA)
+gr_python_install(FILES DESTINATION ${GR_PYTHON_DIR}/gnuradio/DMO_TETRA)
 
 ########################################################################
 # Handle the unit tests

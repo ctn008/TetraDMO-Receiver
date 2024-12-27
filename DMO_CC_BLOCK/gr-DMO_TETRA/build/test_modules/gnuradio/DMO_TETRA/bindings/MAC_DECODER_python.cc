@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(MAC_DECODER.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(36b703a945f91eda0b45f8b6f501b3c9)                     */
+/* BINDTOOL_HEADER_FILE_HASH(a4c5f491952eaedfdd535227f703d1b8)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -30,7 +30,7 @@ namespace py = pybind11;
 void bind_MAC_DECODER(py::module& m)
 {
 
-    using MAC_DECODER    = ::gr::DMO_TETRA::MAC_DECODER;
+    using MAC_DECODER    = gr::DMO_TETRA::MAC_DECODER;
 
 
     py::class_<MAC_DECODER, gr::block, gr::basic_block,

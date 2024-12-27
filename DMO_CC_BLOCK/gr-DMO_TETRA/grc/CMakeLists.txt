@@ -6,4 +6,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 install(FILES
-    DMO_TETRA_MAC_DECODER_LAYER_2_3.block.yml DESTINATION share/gnuradio/grc/blocks)
+    DMO_TETRA_MAC_DECODER_LAYER_2_3.block.yml
+    DMO_TETRA_MAC_DECODER.block.yml DESTINATION share/gnuradio/grc/blocks)

@@ -223,6 +223,30 @@ MAC_DECODER_LAYER_2_3_python.cc.s:
 	cd /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build && $(MAKE) $(MAKESILENT) -f python/DMO_TETRA/bindings/CMakeFiles/DMO_TETRA_python.dir/build.make python/DMO_TETRA/bindings/CMakeFiles/DMO_TETRA_python.dir/MAC_DECODER_LAYER_2_3_python.cc.s
 .PHONY : MAC_DECODER_LAYER_2_3_python.cc.s
 
+MAC_DECODER_python.o: MAC_DECODER_python.cc.o
+.PHONY : MAC_DECODER_python.o
+
+# target to build an object file
+MAC_DECODER_python.cc.o:
+	cd /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build && $(MAKE) $(MAKESILENT) -f python/DMO_TETRA/bindings/CMakeFiles/DMO_TETRA_python.dir/build.make python/DMO_TETRA/bindings/CMakeFiles/DMO_TETRA_python.dir/MAC_DECODER_python.cc.o
+.PHONY : MAC_DECODER_python.cc.o
+
+MAC_DECODER_python.i: MAC_DECODER_python.cc.i
+.PHONY : MAC_DECODER_python.i
+
+# target to preprocess a source file
+MAC_DECODER_python.cc.i:
+	cd /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build && $(MAKE) $(MAKESILENT) -f python/DMO_TETRA/bindings/CMakeFiles/DMO_TETRA_python.dir/build.make python/DMO_TETRA/bindings/CMakeFiles/DMO_TETRA_python.dir/MAC_DECODER_python.cc.i
+.PHONY : MAC_DECODER_python.cc.i
+
+MAC_DECODER_python.s: MAC_DECODER_python.cc.s
+.PHONY : MAC_DECODER_python.s
+
+# target to generate assembly for a file
+MAC_DECODER_python.cc.s:
+	cd /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/build && $(MAKE) $(MAKESILENT) -f python/DMO_TETRA/bindings/CMakeFiles/DMO_TETRA_python.dir/build.make python/DMO_TETRA/bindings/CMakeFiles/DMO_TETRA_python.dir/MAC_DECODER_python.cc.s
+.PHONY : MAC_DECODER_python.cc.s
+
 python_bindings.o: python_bindings.cc.o
 .PHONY : python_bindings.o
 
@@ -265,6 +289,9 @@ help:
 	@echo "... MAC_DECODER_LAYER_2_3_python.o"
 	@echo "... MAC_DECODER_LAYER_2_3_python.i"
 	@echo "... MAC_DECODER_LAYER_2_3_python.s"
+	@echo "... MAC_DECODER_python.o"
+	@echo "... MAC_DECODER_python.i"
+	@echo "... MAC_DECODER_python.s"
 	@echo "... python_bindings.o"
 	@echo "... python_bindings.i"
 	@echo "... python_bindings.s"

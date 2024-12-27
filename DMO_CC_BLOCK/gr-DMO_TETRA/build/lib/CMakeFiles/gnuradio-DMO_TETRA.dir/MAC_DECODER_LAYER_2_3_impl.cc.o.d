@@ -909,9 +909,4 @@ lib/CMakeFiles/gnuradio-DMO_TETRA.dir/MAC_DECODER_LAYER_2_3_impl.cc.o: \
  /usr/local/include/gnuradio/block_registry.h /usr/include/gmpxx.h \
  /usr/include/c++/11/cfloat \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
- /usr/include/x86_64-linux-gnu/gmp.h \
- /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/lib/../include/gnuradio/DMO_TETRA/Pdu.h \
- /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/lib/../include/gnuradio/DMO_TETRA/tetracell.h \
- /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/lib/../include/gnuradio/DMO_TETRA/uplane.h \
- /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/lib/../include/gnuradio/DMO_TETRA/common_lib.h \
- /home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/lib/../include/gnuradio/DMO_TETRA/viterbicodec.h
+ /usr/include/x86_64-linux-gnu/gmp.h

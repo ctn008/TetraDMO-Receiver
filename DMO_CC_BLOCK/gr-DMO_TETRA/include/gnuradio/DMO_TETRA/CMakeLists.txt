@@ -10,4 +10,5 @@
 # Install public header files
 ########################################################################
 install(FILES api.h
-    MAC_DECODER_LAYER_2_3.h DESTINATION include/gnuradio/DMO_TETRA)
+    MAC_DECODER_LAYER_2_3.h
+    MAC_DECODER.h DESTINATION include/gnuradio/DMO_TETRA)

@@ -24,8 +24,7 @@ namespace gr
                 UPlane(){};
                 ~UPlane(){};
                 void service(Pdu pdu, const MacLogicalChannel macLogicalChannel);
-                void GNUservice(Pdu pdu, uint8_t *out, int &out_index);
-                void GNUservice(Pdu pdu, uint8_t *out, int &out_index, bool flag);
+                std::vector<uint8_t> GNUservice(Pdu pdu);
                 std::string* dmoFilename;                                        ///< File names to use for usage DMO mode
             protected:
                 MacLogicalChannel m_macLogicalChannel;                                  ///< Current MAC logical channel

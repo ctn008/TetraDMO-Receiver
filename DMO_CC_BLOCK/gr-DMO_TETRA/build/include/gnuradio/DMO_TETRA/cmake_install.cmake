@@ -46,6 +46,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/gnuradio/DMO_TETRA" TYPE FILE FILES
     "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/include/gnuradio/DMO_TETRA/api.h"
     "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/include/gnuradio/DMO_TETRA/MAC_DECODER_LAYER_2_3.h"
+    "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/include/gnuradio/DMO_TETRA/MAC_DECODER.h"
     )
 endif()
 

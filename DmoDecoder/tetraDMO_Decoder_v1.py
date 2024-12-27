@@ -238,14 +238,14 @@ class tetraDMO_Decoder_v1(gr.top_block, Qt.QWidget):
         self.blocks_char_to_float_2 = blocks.char_to_float(1, 1)
         self.blocks_char_to_float_1 = blocks.char_to_float(1, 1)
         self.audio_sink_0 = audio.sink(audio_rate, '', True)
-        self.DMO_TETRA_MAC_DECODER_LAYER_2_3_0 = DMO_TETRA.MAC_DECODER_LAYER_2_3()
+        self.DMO_TETRA_MAC_DECODER_0 = DMO_TETRA.MAC_DECODER()
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.DMO_TETRA_MAC_DECODER_LAYER_2_3_0, 0), (self.blocks_char_to_float_1, 0))
-        self.connect((self.DMO_TETRA_MAC_DECODER_LAYER_2_3_0, 0), (self.epy_block_0, 0))
+        self.connect((self.DMO_TETRA_MAC_DECODER_0, 0), (self.blocks_char_to_float_1, 0))
+        self.connect((self.DMO_TETRA_MAC_DECODER_0, 0), (self.epy_block_0, 0))
         self.connect((self.blocks_char_to_float_1, 0), (self.qtgui_time_sink_x_0_0_0_0_0, 0))
         self.connect((self.blocks_char_to_float_2, 0), (self.qtgui_time_sink_x_0_0_0_0, 0))
         self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle2_0, 0))
@@ -254,7 +254,7 @@ class tetraDMO_Decoder_v1(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_throttle2_0, 0), (self.epy_block_0_0, 0))
         self.connect((self.epy_block_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.epy_block_0, 0), (self.epy_block_0_2, 0))
-        self.connect((self.epy_block_0_0, 0), (self.DMO_TETRA_MAC_DECODER_LAYER_2_3_0, 0))
+        self.connect((self.epy_block_0_0, 0), (self.DMO_TETRA_MAC_DECODER_0, 0))
         self.connect((self.epy_block_0_0, 0), (self.blocks_char_to_float_2, 0))
         self.connect((self.epy_block_0_2, 0), (self.blocks_multiply_const_vxx_0_0, 0))
 

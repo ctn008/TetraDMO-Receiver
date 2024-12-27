@@ -43,6 +43,9 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gnuradio/grc/blocks" TYPE FILE FILES "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/grc/DMO_TETRA_MAC_DECODER_LAYER_2_3.block.yml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gnuradio/grc/blocks" TYPE FILE FILES
+    "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/grc/DMO_TETRA_MAC_DECODER_LAYER_2_3.block.yml"
+    "/home/von/new/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/grc/DMO_TETRA_MAC_DECODER.block.yml"
+    )
 endif()
 

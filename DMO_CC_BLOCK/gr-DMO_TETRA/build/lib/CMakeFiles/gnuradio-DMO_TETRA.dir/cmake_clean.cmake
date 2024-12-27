@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/gnuradio-DMO_TETRA.dir/MAC_DECODER_LAYER_2_3_impl.cc.o"
   "CMakeFiles/gnuradio-DMO_TETRA.dir/MAC_DECODER_LAYER_2_3_impl.cc.o.d"
+  "CMakeFiles/gnuradio-DMO_TETRA.dir/MAC_DECODER_impl.cc.o"
+  "CMakeFiles/gnuradio-DMO_TETRA.dir/MAC_DECODER_impl.cc.o.d"
   "CMakeFiles/gnuradio-DMO_TETRA.dir/Pdu.cc.o"
   "CMakeFiles/gnuradio-DMO_TETRA.dir/Pdu.cc.o.d"
   "CMakeFiles/gnuradio-DMO_TETRA.dir/common_lib.cc.o"

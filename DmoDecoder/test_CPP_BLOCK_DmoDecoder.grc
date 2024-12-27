@@ -94,20 +94,20 @@ blocks:
     coordinate: [504, 12.0]
     rotation: 0
     state: enabled
-- name: DMO_TETRA_MAC_DECODER_LAYER_2_3_0
-  id: DMO_TETRA_MAC_DECODER_LAYER_2_3
+- name: DMO_TETRA_MAC_DECODER_0
+  id: DMO_TETRA_MAC_DECODER
   parameters:
     affinity: ''
     alias: ''
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    parametername_replace_me: You need to fill in your grc/DMO_TETRA_MAC_DECODER_LAYER_2_3.block.yaml
+    parametername_replace_me: You need to fill in your grc/DMO_TETRA_MAC_DECODER.block.yaml
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [400, 420.0]
+    coordinate: [456, 372.0]
     rotation: 0
     state: enabled
 - name: audio_sink_0
@@ -1149,8 +1149,8 @@ blocks:
     state: enabled
 
 connections:
-- [DMO_TETRA_MAC_DECODER_LAYER_2_3_0, '0', blocks_char_to_float_1, '0']
-- [DMO_TETRA_MAC_DECODER_LAYER_2_3_0, '0', epy_block_0, '0']
+- [DMO_TETRA_MAC_DECODER_0, '0', blocks_char_to_float_1, '0']
+- [DMO_TETRA_MAC_DECODER_0, '0', epy_block_0, '0']
 - [blocks_add_const_vxx_0, '0', qtgui_time_sink_x_0, '0']
 - [blocks_char_to_float_0, '0', blocks_add_const_vxx_0, '0']
 - [blocks_char_to_float_1, '0', qtgui_time_sink_x_0, '1']
@@ -1162,11 +1162,10 @@ connections:
 - [blocks_throttle2_0, '0', epy_block_0_0, '0']
 - [epy_block_0, '0', blocks_file_sink_0, '0']
 - [epy_block_0, '0', epy_block_0_2, '0']
-- [epy_block_0_0, '0', DMO_TETRA_MAC_DECODER_LAYER_2_3_0, '0']
+- [epy_block_0_0, '0', DMO_TETRA_MAC_DECODER_0, '0']
 - [epy_block_0_0, '0', blocks_char_to_float_2, '0']
 - [epy_block_0_0, '0', epy_block_0_1_0_0, '0']
 - [epy_block_0_0, '0', epy_block_1, '0']
-- [epy_block_0_1_0_0, '0', DMO_TETRA_MAC_DECODER_LAYER_2_3_0, '0']
 - [epy_block_0_1_0_0, '0', epy_block_1, '0']
 - [epy_block_0_2, '0', blocks_multiply_const_vxx_0_0, '0']
 - [epy_block_1, '0', blocks_char_to_float_0, '0']

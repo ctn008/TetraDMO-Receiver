@@ -22,6 +22,7 @@ namespace py = pybind11;
 /**************************************/
 // BINDING_FUNCTION_PROTOTYPES(
     void bind_MAC_DECODER_LAYER_2_3(py::module& m);
+    void bind_MAC_DECODER(py::module& m);
 // ) END BINDING_FUNCTION_PROTOTYPES
 
 
@@ -51,5 +52,6 @@ PYBIND11_MODULE(DMO_TETRA_python, m)
     /**************************************/
     // BINDING_FUNCTION_CALLS(
     bind_MAC_DECODER_LAYER_2_3(m);
+    bind_MAC_DECODER(m);
     // ) END BINDING_FUNCTION_CALLS
 }

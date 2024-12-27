@@ -16,7 +16,7 @@ list(APPEND DMO_TETRA_sources
     tetracell.cc 
     uplane.cc 
     viterbicodec.cc
-    MAC_DECODER_LAYER_2_3_impl.cc )
+    MAC_DECODER_impl.cc )
 
 set(DMO_TETRA_sources
     "${DMO_TETRA_sources}"
