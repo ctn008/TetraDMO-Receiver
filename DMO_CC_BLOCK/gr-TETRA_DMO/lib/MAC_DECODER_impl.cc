@@ -35,6 +35,9 @@ namespace gr {
     m_tetraCell = std::make_shared<TetraCell>();
     m_Uplane = std::make_shared<UPlane>();
     TetraTime m_tetraTime;
+    m_burst = {0};
+    m_burst_ptr = 0;
+    m_burst_type = IDLE;
 
     nullPDU.resize(480,0);
     // create Viterbicodec object
@@ -88,53 +91,71 @@ namespace gr {
       int in_index = 0;
       int out_index = 0;
 
-      int in_length = ninput_items.size();
+      int in_length = ninput_items[0];
 
       // std::cout <<"available items: " << nitems_read(0) - last_consumed << "\n";
 
-      for(in_index = 0; in_index <= in_length; in_index +=512)
+      for(in_index = 0; in_index <= in_length; in_index +=510)
       {        
-        // std::cout <<"at cycle: " << cycle << "\n";
+        m_burst[m_burst_ptr] = in[i];
+        m_burst_ptr++;
 
-        std::vector<uint8_t> burst(512);
-        std::copy(in+in_index, in+in_index + 512, burst.begin());
-
-        // resource_check(burst);
-
-        uint8_t type = burst[510];
-        burst_type = static_cast<BurstType>(type); 
-        // std::cout <<"type: " << burst_type << "\n";
-
-        if(burst_type == DNB || burst_type == DNB_SF)
+        if ( (m_bIsSynchronized == true) || (m_bPreSynchronized == true) )
         {
-        std::vector<uint8_t> bkn1(216);  
-        std::vector<uint8_t> bkn2(216);
-
-        bkn1 = vectorExtract(burst,48,216);
-        bkn2 = vectorExtract(burst,286,216);
-        Mac_channel_decode(bkn1,bkn2,burst_type, out_stream, out_index);
+            m_syncBitCounter++;
         }
-        else if(burst_type == DSB)
+
+        if (m_burst_ptr == FRAME_LEN)
         {
-        std::vector<uint8_t> bkn1(120);  
-        std::vector<uint8_t> bkn2(216);
+          m_frameFound = isFrameFound();
+          updateSynchronizer(m_frameFound); 
 
-        bkn1 = vectorExtract(burst,128,120);
-        bkn2 = vectorExtract(burst,286,216);
-        Mac_channel_decode(bkn1,bkn2,burst_type, out_stream, out_index);
+          if (m_bIsSynchronized)
+          {   
+            m_burst_ptr = 0;
+            if(m_burstType == DNB || m_burstType == DNB_SF)
+            {
+            std::vector<uint8_t> bkn1(216);  
+            std::vector<uint8_t> bkn2(216);
+
+            bkn1.insert(bkn1.begin(), &m_burst[34+14], &m_burst[34+14+216]);
+            bkn2.insert(bkn2.begin(), &m_burst[34+252], &m_burst[34+252+216]);
+
+            Mac_channel_decode(bkn1,bkn2,m_burstType, out_stream, out_index);
+            }
+            else if(burst_type == DSB)
+            {
+            std::vector<uint8_t> bkn1(120);  
+            std::vector<uint8_t> bkn2(216);
+
+            bkn1.insert(bkn1.begin(), &m_burst[34+94], &m_burst[34+94+120]);
+            bkn2.insert(bkn2.begin(), &m_burst[34+252], &m_burst[34+252+216]);
+
+            Mac_channel_decode(bkn1,bkn2,burst_type, out_stream, out_index);
+            }
+            cycle++;
+            in_index +=510; 
+          }
+          else
+          {
+            //m_frame.erase(m_frame.begin());
+            for (int k=0; k< FRAME_LEN-1; k++)
+            {
+                m_burst[k] = m_burst[k+1];
+            }
+            m_burst_ptr --;
+          }
         }
-        cycle++;
-        in_index +=512; 
       }
-      if(in_index < noutput_items)
+
+      if(in_length < noutput_items)
       {
-        consume_each(in_index);
+        consume_each(in_length);
       }    
       else
       {
         consume_each(noutput_items);
       }
-
 
       return out_index;
     }
@@ -165,8 +186,8 @@ void MAC_DECODER_impl::Mac_channel_decode(std::vector<uint8_t> bkn1,std::vector<
           }
           else
           {
-            std::cout<<"CRC BKN1: " << checkCrc16Ccitt(bkn1,76) << "\n";
-            std::cout<<"CRC BKN2: " << checkCrc16Ccitt(bkn2,140)<< "\n";
+            // std::cout<<"CRC BKN1: " << checkCrc16Ccitt(bkn1,76) << "\n";
+            // std::cout<<"CRC BKN2: " << checkCrc16Ccitt(bkn2,140)<< "\n";
           }
           break;
         }
@@ -217,7 +238,7 @@ void MAC_DECODER_impl::Mac_channel_decode(std::vector<uint8_t> bkn1,std::vector<
           {
           }
 
-          Mac_service(nullPDU, TCH_S, out, out_index);
+          Mac_service(nullPDU, DTCH_S, out, out_index);
 
           if(m_tetraCell->getStolenFlag())
           {
@@ -238,7 +259,7 @@ void MAC_DECODER_impl::Mac_channel_decode(std::vector<uint8_t> bkn1,std::vector<
           break;
         }
 
-        case INACTIVE:
+        case IDLE:
           {
           break;
           }

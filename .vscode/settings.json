@@ -72,5 +72,6 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "G:/Workspace/repository/tetraDMO-Receiver/DMO_CC_BLOCK/gr-DMO_TETRA/lib"
 }

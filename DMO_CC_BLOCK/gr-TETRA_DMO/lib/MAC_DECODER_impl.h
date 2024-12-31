@@ -26,6 +26,9 @@ namespace gr {
       std::shared_ptr<UPlane> m_Uplane;
       std::shared_ptr<ViterbiCodec> m_viterbiCodec1614;
       TetraTime m_tetraTime;
+      std::uint8_t static m_burst[510];
+      std::uint16_t m_burst_ptr;
+      BurstType m_burstType;
 
      public:
       MAC_DECODER_impl();
