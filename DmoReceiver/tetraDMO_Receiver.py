@@ -81,8 +81,8 @@ class tetraDMO_Receiver(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate = 1280000
         self.rrc_taps = rrc_taps = firdes.root_raised_cosine(nfilts, nfilts, 1.0/float(sps), 0.35, 11*sps*nfilts)
         self.ppm_corr = ppm_corr = 0
-        self.frequency_mhz = frequency_mhz = 390.000000
-        self.freq_offset_khz = freq_offset_khz = 45
+        self.frequency_mhz = frequency_mhz = 392.875
+        self.freq_offset_khz = freq_offset_khz = 0
         self.decim = decim = 16
         self.channel_rate = channel_rate = 36000
         self.audio_rate = audio_rate = 8000
@@ -237,7 +237,6 @@ class tetraDMO_Receiver(gr.top_block, Qt.QWidget):
         self.digital_diff_phasor_cc_0 = digital.diff_phasor_cc()
         self.digital_constellation_decoder_cb_0 = digital.constellation_decoder_cb(constel)
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(constel.bits_per_symbol())
-        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_char*1)
         self.blocks_multiply_const_vxx_0_0 = blocks.multiply_const_ff(4)
         self.audio_sink_0 = audio.sink(audio_rate, '', True)
 
@@ -247,7 +246,6 @@ class tetraDMO_Receiver(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.audio_sink_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.qtgui_time_sink_x_0_0_0, 0))
-        self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.blocks_null_sink_0, 0))
         self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.epy_block_2, 0))
         self.connect((self.digital_constellation_decoder_cb_0, 0), (self.digital_map_bb_0, 0))
         self.connect((self.digital_diff_phasor_cc_0, 0), (self.digital_constellation_decoder_cb_0, 0))

@@ -105,33 +105,24 @@
         }
         std::vector<uint8_t> UPlane::GNUservice(Pdu pdu)
         {
-            std::vector<uint8_t> res(480,0);
+            std::vector<uint8_t> res(432,0);
             int speechframe_size = static_cast<int>(pdu.size());
             // std::cout << "speech size: " << speechframe_size << "\n";
             if(speechframe_size >= 432 && speechframe_size <=480)
             {
                 std::vector<uint8_t> speechframe = pdu.extractVec(0,speechframe_size);
                 std::copy(speechframe.begin(), speechframe.end(), res.begin());
-                res[479] = 0;
-                //std::copy(speechframe.begin(),speechframe.end(),out + out_index);
-                //out_index += 480;   
-                //out[out_index - 1] = 0;// set speech frame
+                // res[479] = 0;
+
 
             }
             else if(speechframe_size >0 && speechframe_size <= 216)
             {
                 std::vector<uint8_t> speechframe = pdu.extractVec(0,speechframe_size);
                 std::copy(speechframe.begin(), speechframe.end(), res.begin() + 216);
-                res[479] = 1;
-                //std::copy(speechframe.begin(),speechframe.end(),out + out_index + 216);
-                //out_index += 480;
-                //out[out_index - 1] = 1;// set stolen frame
+                // res[479] = 1;
+
             }
-            // for (int i = 0; i < res.size(); i++)
-            // {
-            //     std::cout << static_cast<int>(res[i]);
-            // }
-            // std::cout << "\n";
             return res;
         }
     }

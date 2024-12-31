@@ -11,9 +11,7 @@
 namespace gr {
   namespace TETRA_DMO {
 
-    #pragma message("set the following appropriately and remove this warning")
     using input_type = uint8_t;
-    #pragma message("set the following appropriately and remove this warning")
     using output_type = uint8_t;
     MAC_DECODER::sptr
     MAC_DECODER::make()
@@ -35,11 +33,17 @@ namespace gr {
     m_tetraCell = std::make_shared<TetraCell>();
     m_Uplane = std::make_shared<UPlane>();
     TetraTime m_tetraTime;
-    m_burst = {0};
     m_burst_ptr = 0;
-    m_burst_type = IDLE;
+    std::fill(std::begin(m_burst), std::end(m_burst), 0);
+    nullPDU.resize(432,0);
 
-    nullPDU.resize(480,0);
+    m_bPreSynchronized = false;
+    m_bIsSynchronized = false;
+    m_syncBitCounter = 0; 
+    m_frameFound = false;
+    m_validBurstFound = false;
+    FRAME_DETECT_THRESHOLD = 6;
+
     // create Viterbicodec object
     std::vector<int> polynomials;
     int constraint = 6;
@@ -66,19 +70,6 @@ namespace gr {
       /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
     }
 
-    void resource_check(std::vector<uint8_t> bkn)
-    {
-      std::cout<<"resource in check: ";
-      for(int i = 0; i<= bkn.size(); i++)
-      {
-        std::cout << static_cast<int>(bkn[i]);
-      }
-      std::cout <<" \n";
-    }
-
-    int cycle = 0;
-    int last_consumed = 0;
-
     int MAC_DECODER_impl::general_work (int noutput_items,
                        gr_vector_int &ninput_items,
                        gr_vector_const_void_star &input_items,
@@ -88,14 +79,13 @@ namespace gr {
       auto out_stream = static_cast<output_type*>(output_items[0]);
       BurstType burst_type;
       int scoreDesync;
-      int in_index = 0;
       int out_index = 0;
 
       int in_length = ninput_items[0];
 
       // std::cout <<"available items: " << nitems_read(0) - last_consumed << "\n";
 
-      for(in_index = 0; in_index <= in_length; in_index +=510)
+      for(int i = 0; i <= in_length; i++)
       {        
         m_burst[m_burst_ptr] = in[i];
         m_burst_ptr++;
@@ -105,7 +95,7 @@ namespace gr {
             m_syncBitCounter++;
         }
 
-        if (m_burst_ptr == FRAME_LEN)
+        if (m_burst_ptr == 510)
         {
           m_frameFound = isFrameFound();
           updateSynchronizer(m_frameFound); 
@@ -123,7 +113,7 @@ namespace gr {
 
             Mac_channel_decode(bkn1,bkn2,m_burstType, out_stream, out_index);
             }
-            else if(burst_type == DSB)
+            else if(m_burstType == DSB)
             {
             std::vector<uint8_t> bkn1(120);  
             std::vector<uint8_t> bkn2(216);
@@ -131,15 +121,13 @@ namespace gr {
             bkn1.insert(bkn1.begin(), &m_burst[34+94], &m_burst[34+94+120]);
             bkn2.insert(bkn2.begin(), &m_burst[34+252], &m_burst[34+252+216]);
 
-            Mac_channel_decode(bkn1,bkn2,burst_type, out_stream, out_index);
+            Mac_channel_decode(bkn1,bkn2,m_burstType, out_stream, out_index);
             }
-            cycle++;
-            in_index +=510; 
           }
           else
           {
             //m_frame.erase(m_frame.begin());
-            for (int k=0; k< FRAME_LEN-1; k++)
+            for (int k=0; k< 510-1; k++)
             {
                 m_burst[k] = m_burst[k+1];
             }
@@ -160,7 +148,95 @@ namespace gr {
       return out_index;
     }
 
-void MAC_DECODER_impl::Mac_channel_decode(std::vector<uint8_t> bkn1,std::vector<uint8_t> bkn2, BurstType type, uint8_t *out, int &out_index)
+    uint32_t MAC_DECODER_impl::patternAtPositionScore(std::uint8_t *data, std::vector<uint8_t> pattern, std::size_t position)
+    {
+      uint32_t errors = 0;
+
+      for (std::size_t idx = 0; idx < pattern.size(); idx++)
+      {
+          errors += (uint32_t)(pattern[idx] ^ data[position + idx]);
+      }
+
+      return errors;
+    }
+
+    void MAC_DECODER_impl::updateSynchronizer(bool frameFound)
+    {
+      if (frameFound)
+      {
+          if (m_bPreSynchronized == true)
+          {
+              m_bIsSynchronized = true;
+          }
+          else
+          {
+              m_bPreSynchronized = true;
+          }
+          m_syncBitCounter  = 0;             // reset syncBitCounter if frameFound 
+      }
+      else
+      {
+        if ( (m_bPreSynchronized) || (m_bIsSynchronized) )
+        {
+          if (m_syncBitCounter > 510 * 8)   // if syncBitCounter > 8 frames, 
+          {
+            m_bIsSynchronized = false;          // ie. no frameFound in 8 frames
+            m_bPreSynchronized = false;         // then reset Synch status
+            m_syncBitCounter  = 0;
+          }
+        }
+      }
+    }
+
+    bool MAC_DECODER_impl::isFrameFound()
+    {
+      bool frameFound = false;
+      uint32_t score_preamble_p1 = patternAtPositionScore(m_burst, PREAMBLE_P1, 0+34);  // do not count 34 guard bits, burst starts @ zero
+      uint32_t score_preamble_p2 = patternAtPositionScore(m_burst, PREAMBLE_P2, 0+34);  // do not count 34 guard bits
+      uint32_t score_preamble_p3 = patternAtPositionScore(m_burst, PREAMBLE_P3, 0+34);  // do not count 34 guard bits
+
+      uint32_t scoreSync    = patternAtPositionScore(m_burst, SYNC_TRAINING_SEQ,     214+34);
+      uint32_t scoreNormal1 = patternAtPositionScore(m_burst, NORMAL_TRAINING_SEQ_1, 230+34);
+      uint32_t scoreNormal2 = patternAtPositionScore(m_burst, NORMAL_TRAINING_SEQ_2, 230+34);
+
+      scoreNormal1 = (scoreNormal1*38)/22;                                           // multifly with 1.5 to be comparable with STS
+      scoreNormal2 = (scoreNormal2*38)/22;
+
+      scoreNormal1 += score_preamble_p1;                                             // combine bit errors of preamble & training sequences
+      scoreNormal2 += score_preamble_p2;
+      scoreSync += score_preamble_p3;
+
+      // soft decision to detect burst: bit errors in preamble & training sequence less than 6
+      uint32_t scoreMin = scoreSync;                                                  // if same score, Sync Burst is chosen
+      m_burstType = DSB;                                                              // same enum name is used for TMO & DMO (DSB, DNB DNB_SF)
+
+      if (scoreNormal1 < scoreMin)
+      {
+          scoreMin  = scoreNormal1;
+          m_burstType = DNB;
+      }
+      if (scoreNormal2 < scoreMin)
+      {
+          scoreMin  = scoreNormal2;
+          m_burstType = DNB_SF;
+      }
+
+      if (scoreMin <= FRAME_DETECT_THRESHOLD)                                                          // frame (burst) is matched and can be processed
+      {                                                                           // max 1 error for preamble + 5 errors for sts 
+          frameFound = true;
+          m_validBurstFound = true;
+      }
+      else
+      {
+          if (m_bIsSynchronized)
+          {
+              m_burstType = IDLE;
+          }
+      }
+      return frameFound;
+    }
+
+    void MAC_DECODER_impl::Mac_channel_decode(std::vector<uint8_t> bkn1,std::vector<uint8_t> bkn2, BurstType type, uint8_t *out, int &out_index)
     {
       switch(type)
       {
@@ -290,7 +366,7 @@ void MAC_DECODER_impl::Mac_channel_decode(std::vector<uint8_t> bkn1,std::vector<
         traffic_data = m_Uplane->GNUservice(pdu);
         std::copy(traffic_data.begin(), traffic_data.end(), out + out_index);
 
-        out_index += 480;
+        out_index += 432;
         break;
 
         default:
@@ -377,61 +453,60 @@ void MAC_DECODER_impl::Mac_channel_decode(std::vector<uint8_t> bkn1,std::vector<
 
     Pdu MAC_DECODER_impl::pduProcessDmacData(Pdu pdu)
     {
+      Pdu sdu;
+      m_tetraCell->updateStolenFlag(false);                     // set second half slot stolen = False
 
-    Pdu sdu;
-    m_tetraCell->updateStolenFlag(false);                     // set second half slot stolen = False
+      static const std::size_t MIN_SIZE = 124;
 
-    static const std::size_t MIN_SIZE = 124;
+      if (pdu.size() >= MIN_SIZE)
+      {
+          uint16_t pos = 0;
+          uint16_t dmacPduType = pdu.getValue(pos, 2);
+          pos += 2;
+          bool fillBitInd = pdu.getValue(pos, 1);
+          pos += 1;
+          bool sfStolenFlag = pdu.getValue(pos, 1);
+          pos += 1;
+          bool fragFlag = pdu.getValue(pos, 1);
+          pos += 1;
+          bool nullPduFlag = pdu.getValue(pos, 1);
+          pos += 1;
+          uint16_t frameCntDn = pdu.getValue(pos, 2);
+          pos += 2;
+          uint16_t aieEncryptState = pdu.getValue(pos, 2);
+          pos += 2;
+          uint16_t destinAddrType = pdu.getValue(pos, 2);
+          pos += 2;
+          uint16_t destinAddress = 0;                         // may need to update destinAddress from somewhere ?
+          if (destinAddrType != 2)
+          {
+              destinAddress = pdu.getValue(pos, 24);
+              pos += 24;
+          }
+          uint32_t sourceAddrType = pdu.getValue(pos, 2);
+          pos += 2;
 
-    if (pdu.size() >= MIN_SIZE)
-    {
-        uint16_t pos = 0;
-        uint16_t dmacPduType = pdu.getValue(pos, 2);
-        pos += 2;
-        bool fillBitInd = pdu.getValue(pos, 1);
-        pos += 1;
-        bool sfStolenFlag = pdu.getValue(pos, 1);
-        pos += 1;
-        bool fragFlag = pdu.getValue(pos, 1);
-        pos += 1;
-        bool nullPduFlag = pdu.getValue(pos, 1);
-        pos += 1;
-        uint16_t frameCntDn = pdu.getValue(pos, 2);
-        pos += 2;
-        uint16_t aieEncryptState = pdu.getValue(pos, 2);
-        pos += 2;
-        uint16_t destinAddrType = pdu.getValue(pos, 2);
-        pos += 2;
-        uint16_t destinAddress = 0;                         // may need to update destinAddress from somewhere ?
-        if (destinAddrType != 2)
-        {
-            destinAddress = pdu.getValue(pos, 24);
-            pos += 24;
+          uint32_t sourceAddress = 0;                         // may need to update sourceAddress from somewhere ?
+          if (sourceAddrType != 2)
+          {
+              sourceAddress = pdu.getValue(pos, 24);
+              pos += 24;
+          }
+          uint32_t mnIdentity = pdu.getValue(pos, 24);        // ASSUME mnIdentity ALWAYS present (Table 23: DMAC-DATA PDU contents)
+          pos += 24;
+          uint16_t messageType = pdu.getValue(pos, 5);
+          pos += 5;
+          // ASSUME msgDependElem length = 0
+          
+          m_tetraCell->updateStolenFlag(sfStolenFlag);                      // raise flag for serviceUpperMac to process bkn2
+          sdu = Pdu(pdu, pos, MIN_SIZE - pos);
+
+          if ((mnIdentity != 0) && (sourceAddress != 0))      // only updateScramblingCode if valid data
+          {
+              m_tetraCell->updateScramblingCode(sourceAddress, mnIdentity);
+          }
         }
-        uint32_t sourceAddrType = pdu.getValue(pos, 2);
-        pos += 2;
-
-        uint32_t sourceAddress = 0;                         // may need to update sourceAddress from somewhere ?
-        if (sourceAddrType != 2)
-        {
-            sourceAddress = pdu.getValue(pos, 24);
-            pos += 24;
-        }
-        uint32_t mnIdentity = pdu.getValue(pos, 24);        // ASSUME mnIdentity ALWAYS present (Table 23: DMAC-DATA PDU contents)
-        pos += 24;
-        uint16_t messageType = pdu.getValue(pos, 5);
-        pos += 5;
-        // ASSUME msgDependElem length = 0
-        
-        m_tetraCell->updateStolenFlag(sfStolenFlag);                      // raise flag for serviceUpperMac to process bkn2
-        sdu = Pdu(pdu, pos, MIN_SIZE - pos);
-
-        if ((mnIdentity != 0) && (sourceAddress != 0))      // only updateScramblingCode if valid data
-        {
-            m_tetraCell->updateScramblingCode(sourceAddress, mnIdentity);
-        }
-      }
-    return sdu;
+      return sdu;
     }
 
     //coding method

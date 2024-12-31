@@ -109,7 +109,7 @@ blocks:
     gui_hint: '[1,1]'
     label: Baseband offset [kHz]
     type: real
-    value: '45'
+    value: '0'
   states:
     bus_sink: false
     bus_source: false
@@ -125,7 +125,7 @@ blocks:
     gui_hint: '[1,0]'
     label: Frequency [MHz]
     type: real
-    value: '390.000000'
+    value: '392.875'
   states:
     bus_sink: false
     bus_source: false
@@ -255,6 +255,22 @@ blocks:
     coordinate: [1104, 12.0]
     rotation: 0
     state: enabled
+- name: TETRA_DMO_MAC_DECODER_0
+  id: TETRA_DMO_MAC_DECODER
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    parametername_replace_me: You need to fill in your grc/TETRA_DMO_MAC_DECODER.block.yaml
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 772.0]
+    rotation: 0
+    state: disabled
 - name: analog_feedforward_agc_cc_0
   id: analog_feedforward_agc_cc
   parameters:
@@ -476,7 +492,7 @@ blocks:
     _source_code: "\"\"\"\nEmbedded Python Blocks:\nsync block, 480 samples in, 480\
       \ samples out\n\"\"\"\n\nimport numpy as np\nfrom gnuradio import gr\nfrom ctypes\
       \ import *\n\nIN_STEP = 432\nOUT_STEP = 276\n\nclass tetraChDecoder(gr.basic_block):\n\
-      \    lib = cdll.LoadLibrary('/home/ctn008/tetraDMO-Receiver/codec/tetraChDecoderLib.so')\
+      \    lib = cdll.LoadLibrary('/home/von/new/tetraDMO-Receiver/codec/tetraChDecoderLib.so')\
       \ # class level loading lib\n\n    # C-type corresponding to numpy array \n\
       \    ND_POINTER = np.ctypeslib.ndpointer(dtype=np.int16, \n                \
       \                          ndim=1,\n                                       \
@@ -547,7 +563,7 @@ blocks:
       \     #/* Synthesis              */\nparm  = np.array([0]*PRM_SIZE, dtype ='int16')\
       \     #/* Synthesis parameters   */\nserial= np.array([0]*SERIAL_SIZE, dtype\
       \ ='int16')  #/* Serial stream          */\n\nclass tetraSpDecoder(gr.basic_block):\n\
-      \    lib = cdll.LoadLibrary('/home/ctn008/tetraDMO-Receiver/codec/tetraSrcDecoderLib.so')\
+      \    lib = cdll.LoadLibrary('/home/von/new/tetraDMO-Receiver/codec/tetraSrcDecoderLib.so')\
       \ # class level loading lib\n\n    # C-type corresponding to numpy array \n\
       \    ND_POINTER = np.ctypeslib.ndpointer(dtype=np.int16, \n                \
       \                          ndim=1,\n                                       \
@@ -593,7 +609,7 @@ blocks:
       \ of your block. The arguments to __init__  will\nbe the parameters. All of\
       \ them are required to have default values!\n\"\"\"\n\nimport numpy as np\n\
       from gnuradio import gr\nfrom ctypes import *\n\nclass blk(gr.basic_block):\n\
-      \    codingLib = cdll.LoadLibrary('/home/ctn008/tetraDMO-Receiver/DmoDecoder/libs/codingLib.so')\
+      \    codingLib = cdll.LoadLibrary('/home/von/new/tetraDMO-Receiver/DmoDecoder/libs/codingLib.so')\
       \ # class level loading lib\n\n    # C-type corresponding to numpy array \n\
       \    ND_POINTER = np.ctypeslib.ndpointer(dtype=np.uint8, \n                \
       \                      ndim=1,\n                                      flags=\"\
@@ -1344,6 +1360,7 @@ blocks:
     state: enabled
 
 connections:
+- [TETRA_DMO_MAC_DECODER_0, '0', epy_block_0_0, '0']
 - [analog_feedforward_agc_cc_0, '0', digital_fll_band_edge_cc_0, '0']
 - [blocks_multiply_const_vxx_0_0, '0', audio_sink_0, '0']
 - [blocks_multiply_const_vxx_0_0, '0', qtgui_time_sink_x_0_0_0, '0']
@@ -1365,6 +1382,7 @@ connections:
 - [mmse_resampler_xx_0, '0', digital_fll_band_edge_cc_0, '0']
 - [rtlsdr_source_0, '0', freq_xlating_fir_filter_xxx_0, '0']
 - [rtlsdr_source_0, '0', qtgui_time_sink_x_0, '0']
+- [virtual_source_0, '0', TETRA_DMO_MAC_DECODER_0, '0']
 - [virtual_source_0, '0', epy_block_2, '0']
 
 metadata:
