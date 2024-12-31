@@ -1,6 +1,0 @@
-/*!
- * \defgroup block GNU Radio DMO_TETRA C++ Signal Processing Blocks
- * \brief All C++ blocks that can be used from the DMO_TETRA GNU Radio
- *        module are listed here or in the subcategories below.
- *
- */
