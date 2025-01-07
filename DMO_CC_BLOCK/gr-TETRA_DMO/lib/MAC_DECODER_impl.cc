@@ -42,7 +42,7 @@ namespace gr {
     m_syncBitCounter = 0; 
     m_frameFound = false;
     m_validBurstFound = false;
-    FRAME_DETECT_THRESHOLD = 6;
+    FRAME_DETECT_THRESHOLD = 3;
 
     // create Viterbicodec object
     std::vector<int> polynomials;
@@ -66,7 +66,7 @@ namespace gr {
     void
     MAC_DECODER_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      ninput_items_required[0] = (noutput_items / 480) * 512;
+      ninput_items_required[0] = (noutput_items / 432) * 510;
       /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
     }
 
@@ -79,47 +79,48 @@ namespace gr {
       auto out_stream = static_cast<output_type*>(output_items[0]);
       BurstType burst_type;
       int scoreDesync;
+      int in_index = 0;
       int out_index = 0;
-
       int in_length = ninput_items[0];
 
       // std::cout <<"available items: " << nitems_read(0) - last_consumed << "\n";
 
-      for(int i = 0; i <= in_length; i++)
+      for(int i = 0; i < in_length; i++)
       {        
         m_burst[m_burst_ptr] = in[i];
         m_burst_ptr++;
-
-        if ( (m_bIsSynchronized == true) || (m_bPreSynchronized == true) )
+        if ((m_bIsSynchronized == true) || (m_bPreSynchronized == true))
         {
             m_syncBitCounter++;
         }
-
         if (m_burst_ptr == 510)
         {
           m_frameFound = isFrameFound();
           updateSynchronizer(m_frameFound); 
-
+         
           if (m_bIsSynchronized)
           {   
+            std::vector<uint8_t> burst;
+            burst.insert(burst.begin(), m_burst, m_burst + 510);
             m_burst_ptr = 0;
+
             if(m_burstType == DNB || m_burstType == DNB_SF)
             {
-            std::vector<uint8_t> bkn1(216);  
-            std::vector<uint8_t> bkn2(216);
+            std::vector<uint8_t> bkn1(216, 0);  
+            std::vector<uint8_t> bkn2(216, 0);
 
-            bkn1.insert(bkn1.begin(), &m_burst[34+14], &m_burst[34+14+216]);
-            bkn2.insert(bkn2.begin(), &m_burst[34+252], &m_burst[34+252+216]);
+            bkn1 = vectorExtract(burst, 48, 216);
+            bkn2 = vectorExtract(burst, 286,216);
 
             Mac_channel_decode(bkn1,bkn2,m_burstType, out_stream, out_index);
             }
             else if(m_burstType == DSB)
             {
-            std::vector<uint8_t> bkn1(120);  
-            std::vector<uint8_t> bkn2(216);
+            std::vector<uint8_t> bkn1(120, 0);  
+            std::vector<uint8_t> bkn2(216, 0);
 
-            bkn1.insert(bkn1.begin(), &m_burst[34+94], &m_burst[34+94+120]);
-            bkn2.insert(bkn2.begin(), &m_burst[34+252], &m_burst[34+252+216]);
+            bkn1 = vectorExtract(burst,128,120);
+            bkn2 = vectorExtract(burst,286,216);
 
             Mac_channel_decode(bkn1,bkn2,m_burstType, out_stream, out_index);
             }
@@ -127,7 +128,7 @@ namespace gr {
           else
           {
             //m_frame.erase(m_frame.begin());
-            for (int k=0; k< 510-1; k++)
+            for (int k=0; k<509; k++)
             {
                 m_burst[k] = m_burst[k+1];
             }
@@ -135,16 +136,8 @@ namespace gr {
           }
         }
       }
-
-      if(in_length < noutput_items)
-      {
-        consume_each(in_length);
-      }    
-      else
-      {
-        consume_each(noutput_items);
-      }
-
+      
+      consume_each(in_length);
       return out_index;
     }
 
@@ -312,9 +305,10 @@ namespace gr {
 
           if(bkn1valid)
           {
+            Mac_service(bkn1,DSTCH,out,out_index); //DSTCH called
           }
 
-          Mac_service(nullPDU, DTCH_S, out, out_index);
+          // Mac_service(nullPDU, DTCH_S, out, out_index);
 
           if(m_tetraCell->getStolenFlag())
           {
@@ -348,25 +342,34 @@ namespace gr {
     void MAC_DECODER_impl::Mac_service(Pdu pdu, MacLogicalChannel LogicalChannel, uint8_t *out, int &out_index)
     {
       Pdu sdu;
-      std::vector<uint8_t> traffic_data;
+      std::vector<uint8_t> traffic_data(432,0);
+      int speech_size = static_cast<int>(pdu.size());
       switch(LogicalChannel)
       {
         case DSCH_SH:
-        // std::cout<<"DSCH/SH called \n";
-        sdu = pduProcessDmacSync(pdu);
+          // std::cout<<"DSCH/SH called \n";
+          sdu = pduProcessDmacSync(pdu);
         break;
 
         case DSTCH:
-        // std::cout<<"DSTCH called \n";
-        sdu = pduProcessDmacData(pdu);
+          // std::cout<<"DSTCH called \n";
+          sdu = pduProcessDmacData(pdu);
         break;
 
         case DTCH_S:
         // std::cout<<"DTCH_S called \n";
-        traffic_data = m_Uplane->GNUservice(pdu);
-        std::copy(traffic_data.begin(), traffic_data.end(), out + out_index);
-
-        out_index += 432;
+          if(speech_size > 432 || speech_size <= 0){break;}
+          if(speech_size == 432)
+          {
+            traffic_data = pdu.extractVec(0,speech_size);
+            std::copy(traffic_data.begin(), traffic_data.end(), out + out_index);
+          }
+          else
+          {
+            std::vector<uint8_t> speech = pdu.extractVec(0,speech_size);
+            traffic_data.insert(traffic_data.begin() + 216,speech.begin(),speech.end());
+          }
+          out_index += 432;
         break;
 
         default:

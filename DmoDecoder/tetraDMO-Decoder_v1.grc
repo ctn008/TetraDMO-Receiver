@@ -94,21 +94,6 @@ blocks:
     coordinate: [504, 12.0]
     rotation: 0
     state: enabled
-- name: DMO_TETRA_DMO_burst_extract_0_0
-  id: DMO_TETRA_DMO_burst_extract
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [432, 480.0]
-    rotation: 0
-    state: disabled
 - name: audio_sink_0
   id: audio_sink
   parameters:
@@ -143,7 +128,7 @@ blocks:
     bus_structure: null
     coordinate: [824, 380.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_char_to_float_0
   id: blocks_char_to_float
   parameters:
@@ -160,7 +145,7 @@ blocks:
     bus_structure: null
     coordinate: [616, 348.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_char_to_float_1
   id: blocks_char_to_float
   parameters:
@@ -177,7 +162,7 @@ blocks:
     bus_structure: null
     coordinate: [624, 276.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_file_sink_0
   id: blocks_file_sink
   parameters:
@@ -213,7 +198,7 @@ blocks:
     bus_structure: null
     coordinate: [688, 476.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -533,7 +518,7 @@ blocks:
     bus_structure: null
     coordinate: [328, 348.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: epy_block_0_2
   id: epy_block
   parameters:
@@ -662,9 +647,10 @@ blocks:
       \ (len(input_items[0]) >= in_index + IN_STEP) and (len(output_items[0]) >= out_index\
       \ + OUT_STEP):\n            #DEBUG print(\"MN:FN:TN = \", self.m_tetraTime.mn,\"\
       :\",self.m_tetraTime.fn,\":\",self.m_tetraTime.tn, \" \", end ='')\n       \
-      \     if input_items[0][in_index+BURST_LEN] == DSB:\n                bkn1 =\
-      \ np.array(input_items[0][in_index+34+94 :in_index+34+94 +120])\n          \
-      \      bkn2 = np.array(input_items[0][in_index+34+252:in_index+34+252+216])\n\
+      \     if input_items[0][in_index+BURST_LEN] == DSB:\n\n                burst\
+      \ = np.array(input_items[0][in_index:in_index+512])\n\n                print(\"\
+      \".join(map(str,burst)))\n                bkn1 = np.array(input_items[0][in_index+34+94\
+      \ :in_index+34+94 +120])\n                bkn2 = np.array(input_items[0][in_index+34+252:in_index+34+252+216])\n\
       \n                bkn1 = self.descramble(bkn1, 120, 0x03)\n                bkn1\
       \ = self.deinterleave(bkn1, 120, 11)\n                bkn1 = self.depuncture23(bkn1,\
       \ 120)\n                bkn1 = self.viterbiDecode1614(bkn1)\n\n            \
@@ -674,43 +660,43 @@ blocks:
       \ 76)\n                bkn2crc = self.checkCrc16Ccitt(bkn2, 140)\n         \
       \       \n                if (bkn1crc==False) or (bkn2crc==False):\n       \
       \             pass\n                    #DEBUG print(\"DSB \", \"CRC: \", bkn1crc,\
-      \ bkn2crc)\n                else:\n                    #DEBUG print(\"DSB\"\
-      )\n                    bkn1 = np.concatenate((bkn1[:60], bkn2[:124]))\n    \
-      \                self.processDmacSync( bkn1 )\n\n                    \"\"\"\
-      \ bkn1_txt = ''\n                    for i in range(len(bkn1)):\n          \
-      \              bkn1_txt += '1' if bkn1[i] else '0'\n                    print(bkn1_txt)\n\
+      \ bkn2crc)\n                else:\n                    print(\"DSB\")\n    \
+      \                bkn1 = np.concatenate((bkn1[:60], bkn2[:124]))\n          \
+      \          self.processDmacSync( bkn1 )\n\n                    \"\"\" bkn1_txt\
+      \ = ''\n                    for i in range(len(bkn1)):\n                   \
+      \     bkn1_txt += '1' if bkn1[i] else '0'\n                    print(bkn1_txt)\n\
       \                    \"\"\"      \n            elif input_items[0][in_index+BURST_LEN]\
-      \ == DNB:\n                bkn1 = np.array(input_items[0][in_index+34+14 :in_index+34+14\
-      \ +216])\n                bkn2 = np.array(input_items[0][in_index+34+252:in_index+34+252+216])\n\
+      \ == DNB:    \n\n                bkn1 = np.array(input_items[0][in_index+34+14\
+      \ :in_index+34+14 +216])\n                bkn2 = np.array(input_items[0][in_index+34+252:in_index+34+252+216])\n\
       \                bkn1 = np.concatenate((bkn1, bkn2))\n                bkn1 =\
       \ self.descramble(bkn1, 432, self.m_tetraCell.getScramblingCode())\n       \
-      \         \n                #DEBUG print(\"DNB\")\n                output_items[0][out_index:out_index+len(bkn1)]\
+      \         \n                print(\"DNB\")\n                output_items[0][out_index:out_index+len(bkn1)]\
       \ = bkn1\n                out_index += OUT_STEP\n                output_items[0][out_index-1]\
       \ = 0 # set SPEECH FRAME\n\n            elif input_items[0][in_index+BURST_LEN]\
-      \ == DNB_SF:\n                bkn1ValidFlag = False\n                bkn2ValidFlag\
-      \ = False\n\n                # BKN1 block - DMAC STCH \n                bkn1\
-      \ = np.array(input_items[0][in_index+34+14 :in_index+34+14 +216])\n        \
-      \        bkn1 = self.descramble(bkn1, 216, self.m_tetraCell.getScramblingCode())\n\
-      \                bkn1 = self.deinterleave(bkn1, 216, 101)                  \
-      \               \n                bkn1 = self.depuncture23(bkn1, 216)      \
-      \                                \n                bkn1 = self.viterbiDecode1614(bkn1)\
+      \ == DNB_SF:\n                print(\"DNB_SF\")\n                bkn1ValidFlag\
+      \ = False\n                bkn2ValidFlag = False\n\n                # BKN1 block\
+      \ - DMAC STCH \n                bkn1 = np.array(input_items[0][in_index+34+14\
+      \ :in_index+34+14 +216])\n                bkn1 = self.descramble(bkn1, 216,\
+      \ self.m_tetraCell.getScramblingCode())\n                bkn1 = self.deinterleave(bkn1,\
+      \ 216, 101)                                 \n                bkn1 = self.depuncture23(bkn1,\
+      \ 216)                                      \n                bkn1 = self.viterbiDecode1614(bkn1)\
       \                                      \n                if (self.checkCrc16Ccitt(bkn1,\
       \ 140)) :\n                    bkn1 = np.array(bkn1[:124])\n               \
       \     bkn1ValidFlag = True\n\n                # BKN2 block - DMAC STCH or TCH/S\n\
       \                bkn2 = np.array(input_items[0][in_index+34+252:in_index+34+252+216])\n\
       \                bkn2 = self.descramble(bkn2, 216, self.m_tetraCell.getScramblingCode())\n\
-      \                bkn2_uplane = np.array(bkn2)\n                bkn2 = self.deinterleave(bkn2,\
-      \ 216, 101)\n                bkn2 = self.depuncture23(bkn2, 216)\n         \
-      \       bkn2 = self.viterbiDecode1614(bkn2)         \n                if (self.checkCrc16Ccitt(bkn2,\
-      \ 140)):         # check CRC if FALSE ==> TCH/S\n                    bkn2 =\
-      \ np.array(bkn1[:124])\n                    bkn2ValidFlag = True\n\n       \
-      \         #DEBUG print(\"DNB_SF\")\n            \n                if (bkn1ValidFlag):\n\
-      \                    pass # serviceUpperMac(Pdu(bkn1), DSTCH);             \
-      \                  // first block is stolen for C or U signalling\n        \
-      \        else:    # for debug purpose - display if CRC errors found\n      \
-      \              print(f\"DNB_SF Burst CRC check errors found BKN1 TN/FN/MN: %u/%u/%u.\
-      \ \\n\\n\" % (self.m_tetraTime.tn, self.m_tetraTime.fn, self.m_tetraTime.mn))\n\
-      \                \n                output_items[0][out_index:out_index+OUT_STEP]\
+      \                bkn2 = self.deinterleave(bkn2, 216, 101)\n                bkn2_uplane\
+      \ = np.array(bkn2)\n                bkn2 = self.depuncture23(bkn2, 216)\n  \
+      \              bkn2 = self.viterbiDecode1614(bkn2)         \n              \
+      \  if (self.checkCrc16Ccitt(bkn2, 140)):         # check CRC if FALSE ==> TCH/S\n\
+      \                    bkn2 = np.array(bkn1[:124])\n                    bkn2ValidFlag\
+      \ = True\n\n                #DEBUG print(\"DNB_SF\")\n            \n       \
+      \         if (bkn1ValidFlag):\n                    pass # serviceUpperMac(Pdu(bkn1),\
+      \ DSTCH);                               // first block is stolen for C or U\
+      \ signalling\n                else:    # for debug purpose - display if CRC\
+      \ errors found\n                    print(f\"DNB_SF Burst CRC check errors found\
+      \ BKN1 TN/FN/MN: %u/%u/%u. \\n\\n\" % (self.m_tetraTime.tn, self.m_tetraTime.fn,\
+      \ self.m_tetraTime.mn))\n                \n                output_items[0][out_index:out_index+OUT_STEP]\
       \ = np.array([0]*OUT_STEP, dtype='uint8')\n                \n              \
       \  if (self.m_sfStolenFlag):        # if second-half slot is also stolen\n \
       \                   if (bkn2ValidFlag):\n                        pass #serviceUpperMac(Pdu(bkn2),\
@@ -835,7 +821,7 @@ blocks:
     bus_structure: null
     coordinate: [992, 404.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_0_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -935,7 +921,6 @@ blocks:
     state: enabled
 
 connections:
-- [DMO_TETRA_DMO_burst_extract_0_0, '0', blocks_char_to_float_0, '0']
 - [blocks_add_const_vxx_0, '0', qtgui_time_sink_x_0, '1']
 - [blocks_char_to_float_0, '0', blocks_add_const_vxx_0, '0']
 - [blocks_char_to_float_1, '0', qtgui_time_sink_x_0, '0']
@@ -948,7 +933,6 @@ connections:
 - [epy_block_0, '0', epy_block_0_2, '0']
 - [epy_block_0_0, '0', epy_block_0_1_0, '0']
 - [epy_block_0_0, '0', epy_block_1, '0']
-- [epy_block_0_1_0, '0', DMO_TETRA_DMO_burst_extract_0_0, '0']
 - [epy_block_0_1_0, '0', blocks_char_to_float_0, '0']
 - [epy_block_0_1_0, '0', blocks_char_to_float_1, '0']
 - [epy_block_0_1_0, '0', blocks_file_sink_1, '0']

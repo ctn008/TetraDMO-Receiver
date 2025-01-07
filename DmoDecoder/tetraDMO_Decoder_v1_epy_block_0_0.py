@@ -133,7 +133,7 @@ class dmoBurstSync(gr.basic_block):  # other base classes are basic_block, decim
                 in_index += IN_STEP
                 output_items[0][out_index+IN_STEP]   = burstType
                 output_items[0][out_index+IN_STEP+1] = scoreMin
-                
+
                 self.in_pointer += IN_STEP
                 out_index += OUT_STEP
         self.consume(0, in_index) #consume port 0 input

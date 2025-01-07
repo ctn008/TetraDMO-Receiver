@@ -11,6 +11,7 @@
 from PyQt5 import Qt
 from gnuradio import qtgui
 from PyQt5 import QtCore
+from gnuradio import TETRA_DMO
 from gnuradio import audio
 from gnuradio import blocks
 from gnuradio import digital
@@ -30,7 +31,6 @@ import time
 import sip
 import tetraDMO_Receiver_epy_block_0_0 as epy_block_0_0  # embedded python block
 import tetraDMO_Receiver_epy_block_0_2_0 as epy_block_0_2_0  # embedded python block
-import tetraDMO_Receiver_epy_block_2 as epy_block_2  # embedded python block
 
 
 
@@ -78,7 +78,7 @@ class tetraDMO_Receiver(gr.top_block, Qt.QWidget):
         self.variable_adaptive_algorithm_0 = variable_adaptive_algorithm_0 = digital.adaptive_algorithm_cma( constel, 10e-3, 1).base()
         self.skip_symbol = skip_symbol = 1020*0
         self.skip_input = skip_input = int(2040)*0
-        self.samp_rate = samp_rate = 1280000
+        self.samp_rate = samp_rate = int(2e6)
         self.rrc_taps = rrc_taps = firdes.root_raised_cosine(nfilts, nfilts, 1.0/float(sps), 0.35, 11*sps*nfilts)
         self.ppm_corr = ppm_corr = 0
         self.frequency_mhz = frequency_mhz = 392.875
@@ -227,7 +227,6 @@ class tetraDMO_Receiver(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.mmse_resampler_xx_0 = filter.mmse_resampler_cc(0, (float(samp_rate)/(float(decim)*float(channel_rate))))
         self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(decim, firdes.low_pass(1,samp_rate,12500,12500*0.2), (freq_offset_khz*1e3), samp_rate)
-        self.epy_block_2 = epy_block_2.blk()
         self.epy_block_0_2_0 = epy_block_0_2_0.tetraSpDecoder()
         self.epy_block_0_0 = epy_block_0_0.tetraChDecoder()
         self.digital_pfb_clock_sync_xxx_0 = digital.pfb_clock_sync_ccf(sps, (2*cmath.pi/100.0), rrc_taps, nfilts, (nfilts/2), 1.5, sps)
@@ -239,14 +238,16 @@ class tetraDMO_Receiver(gr.top_block, Qt.QWidget):
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(constel.bits_per_symbol())
         self.blocks_multiply_const_vxx_0_0 = blocks.multiply_const_ff(4)
         self.audio_sink_0 = audio.sink(audio_rate, '', True)
+        self.TETRA_DMO_MAC_DECODER_0 = TETRA_DMO.MAC_DECODER()
 
 
         ##################################################
         # Connections
         ##################################################
+        self.connect((self.TETRA_DMO_MAC_DECODER_0, 0), (self.epy_block_0_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.audio_sink_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.qtgui_time_sink_x_0_0_0, 0))
-        self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.epy_block_2, 0))
+        self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.TETRA_DMO_MAC_DECODER_0, 0))
         self.connect((self.digital_constellation_decoder_cb_0, 0), (self.digital_map_bb_0, 0))
         self.connect((self.digital_diff_phasor_cc_0, 0), (self.digital_constellation_decoder_cb_0, 0))
         self.connect((self.digital_diff_phasor_cc_0, 0), (self.qtgui_const_sink_x_0, 0))
@@ -256,7 +257,6 @@ class tetraDMO_Receiver(gr.top_block, Qt.QWidget):
         self.connect((self.digital_pfb_clock_sync_xxx_0, 0), (self.digital_linear_equalizer_0, 0))
         self.connect((self.epy_block_0_0, 0), (self.epy_block_0_2_0, 0))
         self.connect((self.epy_block_0_2_0, 0), (self.blocks_multiply_const_vxx_0_0, 0))
-        self.connect((self.epy_block_2, 0), (self.epy_block_0_0, 0))
         self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.mmse_resampler_xx_0, 0))
         self.connect((self.mmse_resampler_xx_0, 0), (self.digital_fll_band_edge_cc_0, 0))
         self.connect((self.rtlsdr_source_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))

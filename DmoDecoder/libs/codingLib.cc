@@ -239,7 +239,7 @@ uint16_t service_mac(uint8_t* in_data, const int in_len, uint8_t* out_data)
         m_burst[m_burst_ptr] = in_data[i];
         m_burst_ptr ++;
         
-        if ( (m_bIsSynchronized == true) || (m_bPreSynchronized == true) )
+        if ((m_bIsSynchronized == true) || (m_bPreSynchronized == true))
         {
             m_syncBitCounter++;
         }

@@ -67,7 +67,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [312, 12.0]
+    coordinate: [304, 12.0]
     rotation: 0
     state: enabled
 - name: samp_rate
@@ -94,20 +94,20 @@ blocks:
     coordinate: [504, 12.0]
     rotation: 0
     state: enabled
-- name: DMO_TETRA_MAC_DECODER_0
-  id: DMO_TETRA_MAC_DECODER
+- name: TETRA_DMO_MAC_DECODER_1
+  id: TETRA_DMO_MAC_DECODER
   parameters:
     affinity: ''
     alias: ''
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    parametername_replace_me: You need to fill in your grc/DMO_TETRA_MAC_DECODER.block.yaml
+    parametername_replace_me: You need to fill in your grc/TETRA_DMO_MAC_DECODER.block.yaml
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [456, 372.0]
+    coordinate: [320, 300.0]
     rotation: 0
     state: enabled
 - name: audio_sink_0
@@ -178,7 +178,7 @@ blocks:
     bus_structure: null
     coordinate: [736, 428.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_char_to_float_2
   id: blocks_char_to_float
   parameters:
@@ -195,7 +195,7 @@ blocks:
     bus_structure: null
     coordinate: [320, 572.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_file_sink_0
   id: blocks_file_sink
   parameters:
@@ -211,7 +211,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [904, 252.0]
+    coordinate: [920, 244.0]
     rotation: 0
     state: enabled
 - name: blocks_file_sink_1
@@ -254,6 +254,28 @@ blocks:
     coordinate: [8, 132.0]
     rotation: 0
     state: enabled
+- name: blocks_file_source_1
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: /home/von/test/speech_frame_window.uint8
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'False'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [632, 180.0]
+    rotation: 0
+    state: disabled
 - name: blocks_multiply_const_vxx_0_0
   id: blocks_multiply_const_vxx
   parameters:
@@ -292,13 +314,13 @@ blocks:
     bus_structure: null
     coordinate: [96, 324.0]
     rotation: 0
-    state: enabled
-- name: epy_block_0
+    state: disabled
+- name: epy_block_0_0_0
   id: epy_block
   parameters:
     _source_code: "\"\"\"\nEmbedded Python Blocks:\nsync block, 480 samples in, 480\
       \ samples out\n\"\"\"\n\nimport numpy as np\nfrom gnuradio import gr\nfrom ctypes\
-      \ import *\n\n\nIN_STEP = 480\nOUT_STEP = 480\n\nclass tetraChDecoder(gr.sync_block):\n\
+      \ import *\n\nIN_STEP = 432\nOUT_STEP = 276\n\nclass tetraChDecoder(gr.basic_block):\n\
       \    lib = cdll.LoadLibrary('/home/von/new/tetraDMO-Receiver/codec/tetraChDecoderLib.so')\
       \ # class level loading lib\n\n    # C-type corresponding to numpy array \n\
       \    ND_POINTER = np.ctypeslib.ndpointer(dtype=np.int16, \n                \
@@ -314,21 +336,23 @@ blocks:
       \ Output_Frame)\n        return res\n\n    def Desinterleaving_Speech(Input_Frame,\
       \ Output_Frame):\n        res = tetraChDecoder.lib.Desinterleaving_Speech(Input_Frame,\
       \ Output_Frame)\n        return res\n    \n    def __init__(self):\n       \
-      \ gr.sync_block.__init__(\n            self,\n            name='Tetra ACELP\\\
-      nChannel Decoder',   # will show up in GRC\n            in_sig=[np.uint8],\n\
+      \ gr.basic_block.__init__(\n            self,\n            name='Tetra ACELP\\\
+      nChannel Decoder',   # will show up in GRC\n            in_sig =[np.uint8],\n\
       \            out_sig=[np.int16]\n        )\n        self.Loop_counter = 0\n\
       \        self.first_pass = True\n        self.Frame_stealing = False\n     \
       \   self.bfi1 = 0\n        self.bfi2 = 0\n        self.Reordered_array     \
       \    = np.array([0]*286, dtype = 'int16')\n        self.Interleaved_coded_array\
       \ = np.array([0]*432, dtype = 'int16')\n        self.Coded_array           \
-      \  = np.array([0]*432, dtype = 'int16')\n     \n    def work(self, input_items,\
+      \  = np.array([0]*432, dtype = 'int16')\n     \n    def general_work(self, input_items,\
       \ output_items):\n        in_index = 0\n        out_index = 0\n\n        while\
       \ (len(input_items[0]) >= in_index + IN_STEP) and (len(output_items[0]) >= out_index\
-      \ + OUT_STEP) :\n\n            for i in range(432):            # \"0\" = 127,\
-      \ \"1\" = -127\n                self.Interleaved_coded_array[i] = 127 if input_items[0][in_index+i]\
-      \ == 0 else -127\n                                                        \n\
-      \            self.Frame_stealing = input_items[0][in_index + IN_STEP - 1]\n\n\
-      \            if self.Frame_stealing :\n                tetraChDecoder.Desinterleaving_Signalling(self.Interleaved_coded_array[216:],\
+      \ + OUT_STEP) :\n\n            # \"0\" = 127, \"1\" = -127\n            if type(input_items[0][0])\
+      \ == np.uint8:\n                for i in range(432):\n                    self.Interleaved_coded_array[i]\
+      \ = -127 if input_items[0][in_index+i] else 127\n            else: #int16  \
+      \                 \n                self.Interleaved_coded_array[0:432] = input_items[0][in_index:in_index+432]\n\
+      \                                                        \n            #self.Frame_stealing\
+      \ = input_items[0][in_index + IN_STEP - 1]\n\n            if self.Frame_stealing\
+      \ :\n                tetraChDecoder.Desinterleaving_Signalling(self.Interleaved_coded_array[216:],\
       \ self.Coded_array[216:])\n                self.Coded_array[:216] = self.Interleaved_coded_array[:216]\n\
       \            else:\n                tetraChDecoder.Desinterleaving_Speech(self.Interleaved_coded_array,\
       \ self.Coded_array)\n\n            self.bfi1 = self.Frame_stealing\n       \
@@ -339,56 +363,12 @@ blocks:
       \    self.bfi1 = 1\n\n            self.Loop_counter += 1\n            #if self.bfi2:\n\
       \            #    print(f\"Frame Nb %d Bfi active\" %(self.Loop_counter+1))\n\
       \n            output_items[0][out_index] = self.bfi1\n            output_items[0][out_index+1:out_index+138]\
-      \ = self.Reordered_array[0:137]\n            output_items[0][out_index+(OUT_STEP//2)]\
-      \ = self.bfi2\n            output_items[0][out_index+(OUT_STEP//2)+1:out_index+(OUT_STEP//2)+138]\
-      \ = self.Reordered_array[137:274]\n\n            #DEBUG if (not self.bfi1) and\
-      \ (not self.bfi2):\n            #DEBUG     print(self.Loop_counter, \"  full\
-      \ speech frame decoded ok\")\n\n            in_index += IN_STEP\n          \
-      \  out_index += OUT_STEP\n            \n        #self.consume(0, in_index)\n\
-      \        return out_index\n\n\"\"\"\nFRAME_LEN = 480\n\nclass tetraChDecoder(gr.sync_block):\n\
-      \    lib = cdll.LoadLibrary('/home/ctn008/tetraDMO-Receiver/codec/tetraChDecoderLib.so')\
-      \ # class level loading lib\n\n    # C-type corresponding to numpy array \n\
-      \    ND_POINTER = np.ctypeslib.ndpointer(dtype=np.int16, \n                \
-      \                          ndim=1,\n                                       \
-      \   flags=\"C\")\n    lib.Channel_Decoding.argtypes = [c_int16, c_int16, ND_POINTER,\
-      \ ND_POINTER]\n    lib.Channel_Decoding.restype = c_int16\n    lib.Desinterleaving_Signalling.argtypes\
-      \ = [ND_POINTER, ND_POINTER]\n    lib.Desinterleaving_Signalling.restype = c_int16\n\
-      \    lib.Desinterleaving_Speech.argtypes = [ND_POINTER, ND_POINTER]\n    lib.Desinterleaving_Speech.restype\
-      \ = c_int16\n\n\n    def Channel_Decoding(first_pass, Frame_Stealing, Input_Frame,\
-      \ Output_Frame):\n        res = tetraChDecoder.lib.Channel_Decoding(first_pass,\
-      \ Frame_Stealing, Input_Frame, Output_Frame)\n        return res\n\n    def\
-      \ Desinterleaving_Signalling(Input_Frame, Output_Frame):\n        res = tetraChDecoder.lib.Desinterleaving_Signalling(Input_Frame,\
-      \ Output_Frame)\n        return res\n\n    def Desinterleaving_Speech(Input_Frame,\
-      \ Output_Frame):\n        res = tetraChDecoder.lib.Desinterleaving_Speech(Input_Frame,\
-      \ Output_Frame)\n        return res\n    \n    def __init__(self):\n       \
-      \ gr.sync_block.__init__(\n            self,\n            name='Tetra ACELP\\\
-      nChannel Decoder',   # will show up in GRC\n            in_sig=[np.uint8],\n\
-      \            out_sig=[np.int16]\n        )\n        self.Loop_counter = 0\n\
-      \        self.first_pass = True\n        self.Frame_stealing = False\n     \
-      \   self.bfi1 = 0\n        self.bfi2 = 0\n        self.Reordered_array     \
-      \    = np.array([0]*286, dtype = 'int16')\n        self.Interleaved_coded_array\
-      \ = np.array([0]*432, dtype = 'int16')\n        self.Coded_array           \
-      \  = np.array([0]*432, dtype = 'int16')\n     \n    def work(self, input_items,\
-      \ output_items):\n\n        out_index = 0\n\n        while len (output_items[0])\
-      \ >= out_index + FRAME_LEN :\n            for i in range(432):            #\
-      \ \"0\" = 127, \"1\" = -127\n                self.Interleaved_coded_array[i]\
-      \ = 127 if input_items[0][out_index+i] == '0' else -127\n\n            self.Frame_stealing\
-      \ = input_items[0][out_index+FRAME_LEN-1]\n\n            if self.Frame_stealing\
-      \ :\n                tetraChDecoder.Desinterleaving_Signalling(self.Interleaved_coded_array[216:],\
-      \ self.Coded_array[216:])\n                self.Coded_array[:216] = self.Interleaved_coded_array[:216]\n\
-      \            else:\n                tetraChDecoder.Desinterleaving_Speech(self.Interleaved_coded_array,\
-      \ self.Coded_array)\n\n            self.bfi1 = self.Frame_stealing\n       \
-      \     if self.bfi1:\n                print(\"Frame Nb %ld was stolen\\n\", self.Loop_counter+1);\n\
-      \n            bfi2 = tetraChDecoder.Channel_Decoding(self.first_pass, self.Frame_stealing,\
-      \ self.Coded_array, self.Reordered_array)\n            first_pass = False\n\n\
-      \            if (self.Frame_stealing==0) and (self.bfi2==1):\n             \
-      \   self.bfi1 = 1\n\n            self.Loop_counter += 1\n\n            for i\
-      \ in range(137):\n                output_items[0][out_index+i+1] = self.Reordered_array[i]\n\
-      \                output_items[0][out_index+i+1+137+1] = self.Reordered_array[i+137]\n\
-      \n            output_items[0][out_index+i] = self.bfi1\n            output_items[0][out_index+i+1+137]\
-      \ = self.bfi2\n            if (not self.bfi1) and (not self.bfi2):\n       \
-      \         print(self.Loop_counter, \"  full speech frame decoded ok\")\n   \
-      \         out_index += FRAME_LEN\n\n        return out_index\n\"\"\"\n"
+      \ = self.Reordered_array[0:137]\n            output_items[0][out_index+138]\
+      \ = self.bfi2\n            output_items[0][out_index+139:out_index+276] = self.Reordered_array[137:274]\n\
+      \n            #if (not self.bfi1) and (not self.bfi2):\n            #    print(self.Loop_counter,\
+      \ \"  full speech frame decoded ok\")\n\n            in_index += IN_STEP\n \
+      \           out_index += OUT_STEP\n            \n        self.consume(0, in_index)\n\
+      \        return out_index\n"
     affinity: ''
     alias: ''
     comment: ''
@@ -400,112 +380,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [696, 108.0]
-    rotation: 0
-    state: enabled
-- name: epy_block_0_0
-  id: epy_block
-  parameters:
-    _source_code: "\"\"\"\nEmbedded Python Blocks:\n\nEach time this file is saved,\
-      \ GRC will instantiate the first class it finds\nto get ports and parameters\
-      \ of your block. The arguments to __init__  will\nbe the parameters. All of\
-      \ them are required to have default values!\n\ndmoBurstSync\n- input is a stream\
-      \ of demodulated bits (each bit in one byte)\n- output is a stream of consecutive\
-      \ 510 bits (bytes) after burst synchronisation is detected.\n- consider to pass\
-      \ tag along the data stream to indicate the type of burst ? Alternatively, can\
-      \ use 34 guard bit as a burst header to fill in the necessary info or even use\
-      \ extra bytes (on top of 510 bytes) as burst header. Using burst header has\
-      \ the advantage of these headers can be stored together with data streams in\
-      \ output files, maybe more convenient & easy for debug.\n\"\"\"\n\nimport numpy\
-      \ as np\nfrom gnuradio import gr\n\nDSB = 1\nDNB = 2\nDNB_SF = 3\nINACTIVE =\
-      \ 0\nIN_STEP = 510\nOUT_STEP = 512\n\nclass dmoBurstSync(gr.basic_block):  #\
-      \ other base classes are basic_block, decim_block, interp_block\n\n    NORMAL_TRAINING_SEQ_1\
-      \       = (1,1,0,1,0,0,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0)  # n1..n22\n    NORMAL_TRAINING_SEQ_2\
-      \       = (0,1,1,1,1,0,1,0,0,1,0,0,0,0,1,1,0,1,1,1,1,0)  # p1..p22\n    NORMAL_TRAINING_SEQ_3_BEGIN\
-      \ = (0,0,0,1,1,0,1,0,1,1,0,1)                      # q11..q22\n    NORMAL_TRAINING_SEQ_3_END\
-      \   = (1,0,1,1,0,1,1,1,0,0)                          # q1..q10\n\n    SYNC_TRAINING_SEQ\
-      \ = (1,1,0,0,0,0,0,1,1,0,0,1,1,1,0,0,1,1,1,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,1,1,1)\
-      \  # y1..y38\n\n    PREAMBLE_P1  =   (0,0,1,1,0,0,1,0,0,0,1,1)    # j1..j12\n\
-      \    PREAMBLE_P2  =   (1,0,0,1,1,0,1,0,1,0,0,1)    # k1..k12\n    PREAMBLE_P3\
-      \  =   (0,0,0,1,0,1,0,0,0,1,1,1)    # I1..I12\n\n    BURST_DETECT_THRESHOLD\
-      \ = 6;\n\n    def patternAtPositionScore(self, bitstream, pattern, position):\n\
-      \        patternScore = 0\n        for i in range(len(pattern)):\n         \
-      \   if bitstream[position+i] != pattern[i]:\n                patternScore +=\
-      \ 1\n        return patternScore\n\n    def isValidBurst(self, bitstream, index,\
-      \ pointer):\n        \n        score_preamble_p1 = self.patternAtPositionScore(bitstream,\
-      \ dmoBurstSync.PREAMBLE_P1, index + pointer+34)   # don't count 34 guard bits,\
-      \ starts @ zero\n        score_preamble_p2 = self.patternAtPositionScore(bitstream,\
-      \ dmoBurstSync.PREAMBLE_P2, index + pointer+34)   # don't count 34 guard bits\n\
-      \        score_preamble_p3 = self.patternAtPositionScore(bitstream, dmoBurstSync.PREAMBLE_P3,\
-      \ index + pointer+34)   # don't count 34 guard bits\n\n        scoreSync   \
-      \ = self.patternAtPositionScore(bitstream, dmoBurstSync.SYNC_TRAINING_SEQ, \
-      \    214 + index + pointer+34) # STS position DMO burst\n        scoreNormal1\
-      \ = self.patternAtPositionScore(bitstream, dmoBurstSync.NORMAL_TRAINING_SEQ_1,\
-      \ 230 + index + pointer+34) # NTS1 position DMO burst\n        scoreNormal2\
-      \ = self.patternAtPositionScore(bitstream, dmoBurstSync.NORMAL_TRAINING_SEQ_2,\
-      \ 230 + index + pointer+34) # NTS2 position DMO burst\n     \n        scoreNormal1\
-      \ = int((scoreNormal1*38)/22)                                       # multifly\
-      \ with 1.5 to be comparable with STS\n        scoreNormal2 = int((scoreNormal2*38)/22)\
-      \ \n\n        scoreNormal1 += score_preamble_p1                            \
-      \                  # combine bit errors of preamble & training sequences\n \
-      \       scoreNormal2 += score_preamble_p2 \n        scoreSync    += score_preamble_p3\
-      \ \n\n        # soft decision to detect burst: bit errors in preamble & training\
-      \ sequence less than 6\n        scoreMin = scoreSync                       \
-      \                            # if same score, Sync Burst is chosen\n       \
-      \ burstType = DSB         \n\n        if (scoreNormal1 < scoreMin):\n      \
-      \      scoreMin  = scoreNormal1 \n            burstType = DNB \n        if (scoreNormal2\
-      \ < scoreMin):\n            scoreMin  = scoreNormal2 \n            burstType\
-      \ = DNB_SF \n\n        if (scoreMin > dmoBurstSync.BURST_DETECT_THRESHOLD):\
-      \                  # frame (burst) is matched and can be processed\n       \
-      \     burstType = INACTIVE\n            \n        return (burstType, scoreMin)\n\
-      \n    def __init__(self, dmoMode = True): \n        gr.basic_block.__init__(\n\
-      \            self,\n            name='dmoBurst\\nDetect-Sync',     # will show\
-      \ up in GRC\n            in_sig=[np.uint8],\n            out_sig=[np.uint8]\n\
-      \        )\n        self.dmoMode = dmoMode       # False means tmoMode\n   \
-      \     self.burstActive = False\n        self.burstSynced = False\n        self.prevBurstDetected\
-      \ = False\n        self.firstDetect = 0\n        self.in_pointer = 0       \
-      \ \n\n    def general_work(self, input_items, output_items):\n\n        in_index\
-      \ = 0\n        out_index = 0\n\n        while (len(input_items[0]) >= in_index\
-      \ + IN_STEP) and (len(output_items[0]) >= out_index + OUT_STEP):\n         \
-      \   # only process the code below if more than 510 input data samples\n\n  \
-      \          if (not self.burstSynced):\n                for i in range(len(input_items[0])\
-      \ - in_index - IN_STEP): \n                    (burstType, scoreMin) = self.isValidBurst(input_items[0],\
-      \ in_index, i)\n\n                    if (burstType == DSB):\n             \
-      \           if self.prevBurstDetected == True:\n                           \
-      \ if (self.in_pointer - self.firstDetect) == 510: \n                       \
-      \         self.burstSynced = True\n                                #DEBUG\n\
-      \                                print(\"first burst detected at: \", self.firstDetect)\n\
-      \                                break   # break for loop if validBurst found\n\
-      \                            else:\n                                self.prevBurstDetected\
-      \ = True\n                                self.firstDetect = self.in_pointer\n\
-      \                        else:\n                            self.prevBurstDetected\
-      \ = True\n                            self.firstDetect = self.in_pointer\n \
-      \                           \n                    self.in_pointer += 1\n   \
-      \             in_index += i\n            else:          \n                (burstType,\
-      \ scoreMin) = self.isValidBurst(input_items[0], in_index, 0)\n             \
-      \   if (burstType):\n                    self.burstActive = True\n         \
-      \       else:\n                    self.burstActive = False\n\n            \
-      \    if burstType :\n                    output_items[0][out_index:out_index+IN_STEP]\
-      \ = input_items[0][in_index:in_index+IN_STEP]\n                else:\n     \
-      \               output_items[0][out_index:out_index+IN_STEP] = np.array([0]*IN_STEP,\
-      \ dtype = 'uint8')\n                    \n                in_index += IN_STEP\n\
-      \                output_items[0][out_index+IN_STEP]   = burstType\n        \
-      \        output_items[0][out_index+IN_STEP+1] = scoreMin\n                \n\
-      \                self.in_pointer += IN_STEP\n                out_index += OUT_STEP\n\
-      \        self.consume(0, in_index) #consume port 0 input\n        return out_index\n"
-    affinity: ''
-    alias: ''
-    comment: (510+2) burst
-    dmoMode: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-  states:
-    _io_cache: ('dmoBurst\nDetect-Sync', 'dmoBurstSync', [('dmoMode', 'True')], [('0',
-      'byte', 1)], [('0', 'byte', 1)], '', ['dmoMode'])
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [208, 236.0]
+    coordinate: [696, 84.0]
     rotation: 0
     state: enabled
 - name: epy_block_0_1_0_0
@@ -549,19 +424,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [376, 244.0]
+    coordinate: [360, 228.0]
     rotation: 0
     state: disabled
-- name: epy_block_0_2
+- name: epy_block_0_2_0_0
   id: epy_block
   parameters:
     _source_code: "\"\"\"\nEmbedded Python Blocks:\n\n\"\"\"\n\nimport numpy as np\n\
-      from gnuradio import gr\nfrom ctypes import *\n\nIN_STEP     = 240\nOUT_STEP\
-      \    = 240\n\nL_FRAME     = 240\nSERIAL_SIZE = 138\nPRM_SIZE    = 24\n\nsynth\
-      \ = np.array([0]*L_FRAME, dtype ='int16')      #/* Synthesis              */\n\
-      parm  = np.array([0]*PRM_SIZE, dtype ='int16')     #/* Synthesis parameters\
-      \   */\nserial= np.array([0]*SERIAL_SIZE, dtype ='int16')  #/* Serial stream\
-      \          */\n\nclass tetraSpDecoder(gr.sync_block):\n    lib = cdll.LoadLibrary('/home/von/new/tetraDMO-Receiver/codec/tetraSrcDecoderLib.so')\
+      from gnuradio import gr\nfrom ctypes import *\n\nL_FRAME     = 240\nSERIAL_SIZE\
+      \ = 138\nPRM_SIZE    = 24\n\nsynth = np.array([0]*L_FRAME, dtype ='int16') \
+      \     #/* Synthesis              */\nparm  = np.array([0]*PRM_SIZE, dtype ='int16')\
+      \     #/* Synthesis parameters   */\nserial= np.array([0]*SERIAL_SIZE, dtype\
+      \ ='int16')  #/* Serial stream          */\n\nclass tetraSpDecoder(gr.basic_block):\n\
+      \    lib = cdll.LoadLibrary('/home/von/new/tetraDMO-Receiver/codec/tetraSrcDecoderLib.so')\
       \ # class level loading lib\n\n    # C-type corresponding to numpy array \n\
       \    ND_POINTER = np.ctypeslib.ndpointer(dtype=np.int16, \n                \
       \                          ndim=1,\n                                       \
@@ -571,34 +446,32 @@ blocks:
       \        \n    def Bits2prm_Tetra(serial, parm):\n        tetraSpDecoder.lib.Bits2prm_Tetra(serial,\
       \ parm)\n\n    def Decod_Tetra(parm, synth):\n        tetraSpDecoder.lib.Decod_Tetra(parm,\
       \ synth)\n\n    def Post_Process(synth, L_frame):    \n        tetraSpDecoder.lib.Post_Process(synth,\
-      \ L_frame)\n\n    \n    def __init__(self,gain=1.0):\n        gr.sync_block.__init__(\n\
+      \ L_frame)\n\n    \n    def __init__(self):\n        gr.basic_block.__init__(\n\
       \            self,\n            name='Tetra ACELP\\nSpeech Decoder',   # will\
       \ show up in GRC\n            in_sig=[np.int16],\n            out_sig=[np.float32]\n\
-      \        )\n        self.frame = 0\n        self.gain = gain\n\n    def work(self,\
-      \ input_items, output_items):\n        cod_ptr = 0\n        raw_ptr = 0\n\n\
-      \        tetraSpDecoder.Init_Decod_Tetra()\n        while (cod_ptr + IN_STEP\
-      \ <= len(input_items[0])) and (raw_ptr + OUT_STEP <= len(output_items[0])):\n\
-      \n            for j in range (SERIAL_SIZE):\n                serial[j] = input_items[0][cod_ptr+j]\n\
-      \                \n            cod_ptr += IN_STEP\n            self.frame +=1\n\
-      \            \n            #DEBUG print(\"frame= %d\" %self.frame)\n       \
-      \     tetraSpDecoder.Bits2prm_Tetra(serial, parm)\n            tetraSpDecoder.Decod_Tetra(parm,\
-      \ synth)\n            tetraSpDecoder.Post_Process(synth, L_FRAME)\n\n      \
-      \      for j in range (L_FRAME):\n                output_items[0][raw_ptr+j]\
-      \ = synth[j]/32768*self.gain\n            \n            raw_ptr += OUT_STEP\n\
-      \        #self.consume(0, cod_ptr)\n        return raw_ptr\n"
+      \        )\n        self.frame = 0\n\n    def general_work(self, input_items,\
+      \ output_items):\n        cod_ptr = 0\n        raw_ptr = 0\n\n        tetraSpDecoder.Init_Decod_Tetra()\n\
+      \        while (cod_ptr + SERIAL_SIZE <= len(input_items[0])) and (raw_ptr +\
+      \ L_FRAME <= len(output_items[0])):\n\n            for j in range (SERIAL_SIZE):\n\
+      \                serial[j] = input_items[0][cod_ptr+j]\n                \n \
+      \           cod_ptr += SERIAL_SIZE\n            self.frame +=1\n           \
+      \ \n            #print(\"frame= %d\" %self.frame)\n            tetraSpDecoder.Bits2prm_Tetra(serial,\
+      \ parm)\n            tetraSpDecoder.Decod_Tetra(parm, synth)\n            tetraSpDecoder.Post_Process(synth,\
+      \ L_FRAME)\n\n            for j in range (L_FRAME):\n                output_items[0][raw_ptr+j]\
+      \ = synth[j] / 32768\n            \n            raw_ptr += L_FRAME\n       \
+      \ self.consume(0, cod_ptr)\n        return raw_ptr\n"
     affinity: ''
     alias: ''
     comment: ''
-    gain: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
   states:
-    _io_cache: ('Tetra ACELP\nSpeech Decoder', 'tetraSpDecoder', [('gain', '1.0')],
-      [('0', 'short', 1)], [('0', 'float', 1)], '', ['gain'])
+    _io_cache: ('Tetra ACELP\nSpeech Decoder', 'tetraSpDecoder', [], [('0', 'short',
+      1)], [('0', 'float', 1)], '', [])
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [928, 84.0]
+    coordinate: [920, 52.0]
     rotation: 0
     state: enabled
 - name: epy_block_1
@@ -757,6 +630,43 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [440, 124.0]
+    rotation: 0
+    state: disabled
+- name: epy_block_2
+  id: epy_block
+  parameters:
+    _source_code: "\"\"\"\nEmbedded Python Blocks:\n\nEach time this file is saved,\
+      \ GRC will instantiate the first class it finds\nto get ports and parameters\
+      \ of your block. The arguments to __init__  will\nbe the parameters. All of\
+      \ them are required to have default values!\n\"\"\"\n\nimport numpy as np\n\
+      from gnuradio import gr\nfrom ctypes import *\n\nclass blk(gr.basic_block):\n\
+      \    codingLib = cdll.LoadLibrary('/home/von/new/tetraDMO-Receiver/DmoDecoder/libs/codingLib.so')\
+      \ # class level loading lib\n\n    # C-type corresponding to numpy array \n\
+      \    ND_POINTER = np.ctypeslib.ndpointer(dtype=np.uint8, \n                \
+      \                      ndim=1,\n                                      flags=\"\
+      C\")\n    def service_mac(in_data, in_len, out_data):\n        blk.codingLib.service_mac.argtypes\
+      \ = [blk.ND_POINTER, c_size_t, blk.ND_POINTER]\n        blk.codingLib.service_mac.restype\
+      \ = c_size_t\n        res = blk.codingLib.service_mac(in_data, in_len, out_data)\n\
+      \        return res\n\n\n    def __init__(self):\n        gr.basic_block.__init__(\n\
+      \            self,\n            name='DMO\\nBurst SYNC',   # will show up in\
+      \ GRC\n            in_sig=[np.uint8],\n            out_sig=[np.uint8]\n    \
+      \    )\n\n    def general_work(self, input_items, output_items):\n        in_len\
+      \ = len(input_items[0])\n        out_len = len(output_items[0])\n        consume_len\
+      \ = in_len if (in_len < (out_len - 510)) else (out_len - 510)\n        out_items\
+      \ = blk.service_mac(input_items[0], consume_len, output_items[0])\n        self.consume(0,\
+      \ consume_len)\n        return out_items\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    _io_cache: ('DMO\nBurst SYNC', 'blk', [], [('0', 'byte', 1)], [('0', 'byte', 1)],
+      '', [])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 412.0]
     rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_0
@@ -1049,7 +959,7 @@ blocks:
     bus_structure: null
     coordinate: [552, 580.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_0_0_0_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -1146,30 +1056,31 @@ blocks:
     bus_structure: null
     coordinate: [1056, 564.0]
     rotation: 0
-    state: enabled
+    state: disabled
 
 connections:
-- [DMO_TETRA_MAC_DECODER_0, '0', blocks_char_to_float_1, '0']
-- [DMO_TETRA_MAC_DECODER_0, '0', epy_block_0, '0']
+- [TETRA_DMO_MAC_DECODER_1, '0', epy_block_0_0_0, '0']
 - [blocks_add_const_vxx_0, '0', qtgui_time_sink_x_0, '0']
 - [blocks_char_to_float_0, '0', blocks_add_const_vxx_0, '0']
 - [blocks_char_to_float_1, '0', qtgui_time_sink_x_0, '1']
 - [blocks_char_to_float_1, '0', qtgui_time_sink_x_0_0_0_0_0, '0']
 - [blocks_char_to_float_2, '0', qtgui_time_sink_x_0_0_0_0, '0']
+- [blocks_file_source_0, '0', TETRA_DMO_MAC_DECODER_1, '0']
+- [blocks_file_source_0, '0', blocks_char_to_float_2, '0']
 - [blocks_file_source_0, '0', blocks_throttle2_0, '0']
+- [blocks_file_source_1, '0', epy_block_0_0_0, '0']
 - [blocks_multiply_const_vxx_0_0, '0', audio_sink_0, '0']
 - [blocks_multiply_const_vxx_0_0, '0', qtgui_time_sink_x_0_0_0, '0']
-- [blocks_throttle2_0, '0', epy_block_0_0, '0']
-- [epy_block_0, '0', blocks_file_sink_0, '0']
-- [epy_block_0, '0', epy_block_0_2, '0']
-- [epy_block_0_0, '0', DMO_TETRA_MAC_DECODER_0, '0']
-- [epy_block_0_0, '0', blocks_char_to_float_2, '0']
-- [epy_block_0_0, '0', epy_block_0_1_0_0, '0']
-- [epy_block_0_0, '0', epy_block_1, '0']
+- [blocks_throttle2_0, '0', TETRA_DMO_MAC_DECODER_1, '0']
+- [blocks_throttle2_0, '0', blocks_char_to_float_2, '0']
+- [blocks_throttle2_0, '0', epy_block_2, '0']
+- [epy_block_0_0_0, '0', blocks_file_sink_0, '0']
+- [epy_block_0_0_0, '0', epy_block_0_2_0_0, '0']
 - [epy_block_0_1_0_0, '0', epy_block_1, '0']
-- [epy_block_0_2, '0', blocks_multiply_const_vxx_0_0, '0']
+- [epy_block_0_2_0_0, '0', blocks_multiply_const_vxx_0_0, '0']
 - [epy_block_1, '0', blocks_char_to_float_0, '0']
-- [epy_block_1, '0', epy_block_0, '0']
+- [epy_block_2, '0', blocks_char_to_float_1, '0']
+- [epy_block_2, '0', epy_block_0_0_0, '0']
 
 metadata:
   file_format: 1

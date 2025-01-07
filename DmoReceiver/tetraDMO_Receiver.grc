@@ -182,7 +182,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '1280000'
+    value: int(2e6)
   states:
     bus_sink: false
     bus_source: false
@@ -270,7 +270,7 @@ blocks:
     bus_structure: null
     coordinate: [272, 772.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: analog_feedforward_agc_cc_0
   id: analog_feedforward_agc_cc
   parameters:
@@ -637,7 +637,7 @@ blocks:
     bus_structure: null
     coordinate: [280, 716.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: freq_xlating_fir_filter_xxx_0
   id: freq_xlating_fir_filter_xxx
   parameters:

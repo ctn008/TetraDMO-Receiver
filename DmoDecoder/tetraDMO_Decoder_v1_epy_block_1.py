@@ -151,7 +151,6 @@ class lowerMac(gr.basic_block):
             self.mnIdentity = lowerMac.getValue(pdu, pos, 24)
             pos += 24
         if self.mnIdentity and self.sourceAddress :
-            print("scrambling code is: ", self.m_tetraCell.getScramblingCode())
             self.m_tetraCell.updateScramblingCode(self.sourceAddress, self.mnIdentity)
 
         #DEBUG print("Scrambling code: ", hex(self.m_tetraCell.getScramblingCode()) )
@@ -161,8 +160,12 @@ class lowerMac(gr.basic_block):
         in_index = 0
         out_index = 0
         while (len(input_items[0]) >= in_index + IN_STEP) and (len(output_items[0]) >= out_index + OUT_STEP):
-            # print("MN:FN:TN = ", self.m_tetraTime.mn,":",self.m_tetraTime.fn,":",self.m_tetraTime.tn, " ", end ='')
+            #DEBUG print("MN:FN:TN = ", self.m_tetraTime.mn,":",self.m_tetraTime.fn,":",self.m_tetraTime.tn, " ", end ='')
             if input_items[0][in_index+BURST_LEN] == DSB:
+
+                burst = np.array(input_items[0][in_index:in_index+512])
+
+                print("".join(map(str,burst)))
                 bkn1 = np.array(input_items[0][in_index+34+94 :in_index+34+94 +120])
                 bkn2 = np.array(input_items[0][in_index+34+252:in_index+34+252+216])
 
@@ -181,16 +184,19 @@ class lowerMac(gr.basic_block):
                 
                 if (bkn1crc==False) or (bkn2crc==False):
                     pass
-                    print("DSB ", "CRC: ", bkn1crc, bkn2crc)
+                    #DEBUG print("DSB ", "CRC: ", bkn1crc, bkn2crc)
                 else:
                     print("DSB")
                     bkn1 = np.concatenate((bkn1[:60], bkn2[:124]))
                     self.processDmacSync( bkn1 )
-                print("input_items: ", in_index, "\n")
-                print("output_items: ", out_index, "\n")
 
-                    
-            elif input_items[0][in_index+BURST_LEN] == DNB:
+                    """ bkn1_txt = ''
+                    for i in range(len(bkn1)):
+                        bkn1_txt += '1' if bkn1[i] else '0'
+                    print(bkn1_txt)
+                    """      
+            elif input_items[0][in_index+BURST_LEN] == DNB:    
+
                 bkn1 = np.array(input_items[0][in_index+34+14 :in_index+34+14 +216])
                 bkn2 = np.array(input_items[0][in_index+34+252:in_index+34+252+216])
                 bkn1 = np.concatenate((bkn1, bkn2))
@@ -202,6 +208,7 @@ class lowerMac(gr.basic_block):
                 output_items[0][out_index-1] = 0 # set SPEECH FRAME
 
             elif input_items[0][in_index+BURST_LEN] == DNB_SF:
+                print("DNB_SF")
                 bkn1ValidFlag = False
                 bkn2ValidFlag = False
 
@@ -218,15 +225,15 @@ class lowerMac(gr.basic_block):
                 # BKN2 block - DMAC STCH or TCH/S
                 bkn2 = np.array(input_items[0][in_index+34+252:in_index+34+252+216])
                 bkn2 = self.descramble(bkn2, 216, self.m_tetraCell.getScramblingCode())
-                bkn2_uplane = np.array(bkn2)
                 bkn2 = self.deinterleave(bkn2, 216, 101)
+                bkn2_uplane = np.array(bkn2)
                 bkn2 = self.depuncture23(bkn2, 216)
                 bkn2 = self.viterbiDecode1614(bkn2)         
                 if (self.checkCrc16Ccitt(bkn2, 140)):         # check CRC if FALSE ==> TCH/S
-                    bkn2 = np.array(bkn2[:124])
+                    bkn2 = np.array(bkn1[:124])
                     bkn2ValidFlag = True
 
-                print("DNB_SF")
+                #DEBUG print("DNB_SF")
             
                 if (bkn1ValidFlag):
                     pass # serviceUpperMac(Pdu(bkn1), DSTCH);                               // first block is stolen for C or U signalling
@@ -242,8 +249,7 @@ class lowerMac(gr.basic_block):
                         print(f"DNB_SF Burst CRC check errors found BKN2 TN/FN/MN: %u/%u/%u. \n\n" %(self.m_tetraTime.tn, self.m_tetraTime.fn, self.m_tetraTime.mn))                    
                 else:
                     output_items[0][out_index+216:out_index+432] = bkn2_uplane
-                print("input_items: ", in_index, "\n")
-                print("output_items: ", out_index, "\n")
+
                 out_index += OUT_STEP
                 output_items[0][out_index-1] = 1 # set STOLEN FRAME                
             else:
