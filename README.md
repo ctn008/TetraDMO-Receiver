@@ -1,3 +1,34 @@
+# Project Title: TETRA Receiver (RTL-SDR)
+
+## 📌 Overview
+This project implements a **TETRA DMO receiver** using an **RTL-SDR device**, GNU Radio, and custom Python/C++ blocks.  
+It can demodulate and decode TETRA signals from a handset and stream live audio to a PC.  
+
+This work was carried out as part of a **graduation thesis project at HUST (Vietnam)**, where I mentored undergraduate students.
+
+---
+
+## 🛠️ Features
+- Real-time demodulation and decoding of TETRA DMO signals  
+- Audio stream output to PC speakers  
+- Custom GNU Radio blocks written in **Python** and **C++**  
+- Tested with live RF signals from a TETRA handset  
+
+---
+
+## 🔧 Tools & Technologies
+- Hardware: RTL-SDR USB dongle  
+- Software: GNU Radio, Python, C++  
+- OS: Linux (Ubuntu recommended)  
+- Protocols: TETRA (Direct Mode Operation)  
+
+---
+
+## 🚀 How to Run
+1. Clone this repo:  
+   ```bash
+   git clone https://github.com/yourusername/tetra-receiver.git
+
 # Tetra DMO Receiver
 Using RTL-SDR device to receive Tetra DMO signal and demodulated, decoded the received signal to retrieve audio and output to PC speakers.
 The repo consists of 2 main programs: 
