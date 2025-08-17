@@ -4,7 +4,7 @@
 This project implements a **TETRA DMO receiver** using an **RTL-SDR device**, GNU Radio, and custom Python/C++ blocks.  
 It can demodulate and decode TETRA signals from a handset and stream live audio to a PC.  
 
-This work was carried out as part of a **graduation thesis project at HUST (Vietnam)**, where I mentored undergraduate students.
+This work was carried out as part of a **graduation thesis project in Vietnam**, where I mentored undergraduate students.
 
 ---
 
