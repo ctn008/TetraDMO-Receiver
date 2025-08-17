@@ -28,35 +28,32 @@ This work was carried out as part of a **graduation thesis project at HUST (Viet
 1. Clone this repo:  
    ```bash
    git clone https://github.com/yourusername/tetra-receiver.git---
-Install dependencies (Python libraries, C++ build tools).
-Connect the RTL-SDR device.
-Run the GNU Radio flowgraph / custom block pipeline.
+2. Install dependencies (Python libraries, C++ build tools).  
+3. Connect the RTL-SDR device.  
+4. Run the GNU Radio flowgraph / custom block pipeline.  
 
 ---
 
-📊 Results
+## 📊 Results
+- Successfully demodulated and decoded signals from a TETRA handset
+- [Live audio streamed to PC speakers]
 
-[Key achievement 1, e.g., Successfully demodulated and decoded signals from a TETRA handset]
 
-[Key achievement 2, e.g., Visualized wireless coverage on Google Maps]
-
-[Key achievement 3, e.g., Stored RF data for post-analysis]
-
-📚 Learning & Contribution
+## 📚 Learning & Contribution
 
 This project demonstrates knowledge in:
 
-RF signal processing
+- RF signal processing
 
-SDR hardware/software integration
+- SDR hardware/software integration
 
-Digital communications protocols
+- Digital communications protocols
 
-Software development (Python, C++)
+- Software development (Python, C++)
 
-System prototyping and validation
+- System prototyping and validation
 
-Mentorship / collaboration (if applicable)
+- Mentorship / collaboration (if applicable)
 
 🔗 Related Work
 
